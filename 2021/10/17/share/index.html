@@ -1,0 +1,164 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="google-site-verification" content="" />
+  <meta name="referrer" content="unsafe-url">
+  
+  <title>垂直居中的多种方法</title>
+  <meta name="author" content="MUMU">
+  <meta name="description" content="垂直居中水平居中的几种方法方法一：flex布局法1.在父级盒子中添加flex css样式123display:flexjustify-content:center;flex-direction:column;/row;/*垂直或水平*/
+
+2.垂直居中12display: flex;align-it">
+  
+  
+  <meta property="og:title" content="垂直居中的多种方法"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="MUMU&#39;s blog"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/atom.xml" title="MUMU&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/m.min.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/" class="back black-color">
+    <svg class="i-close" viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+        <path d="M2 30 L30 2 M30 30 L2 2"></path>
+    </svg>
+  </a>
+  
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title center">
+        垂直居中的多种方法
+    </h1>
+  
+
+
+    </div>
+    <div class="meta center">
+      <time datetime="2021-10-17T03:13:04.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2021-10-17
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/tags/css/">css</a>
+
+
+    </div>
+    <hr>
+    
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD%E6%B0%B4%E5%B9%B3%E5%B1%85%E4%B8%AD%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95"><span class="toc-text">垂直居中水平居中的几种方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9Aflex%E5%B8%83%E5%B1%80%E6%B3%95"><span class="toc-text">方法一：flex布局法</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1-%E5%9C%A8%E7%88%B6%E7%BA%A7%E7%9B%92%E5%AD%90%E4%B8%AD%E6%B7%BB%E5%8A%A0flex-css%E6%A0%B7%E5%BC%8F"><span class="toc-text">1.在父级盒子中添加flex css样式</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD"><span class="toc-text">2.垂直居中</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9A%E7%BB%9D%E5%AF%B9%E5%AE%9A%E4%BD%8D%E6%B3%95"><span class="toc-text">方法二：绝对定位法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-%E7%BB%9D%E5%AF%B9%E5%AE%9A%E4%BD%8D%E4%B8%8Btop-left-right-bottom-%E9%83%BD%E8%AE%BE%E7%BD%AE0%EF%BC%88%E6%B0%B4%E5%B9%B3%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD%EF%BC%89"><span class="toc-text">1.绝对定位下top left right bottom 都设置0（水平垂直居中）</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#2"><span class="toc-text">2.</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#Transform-%E5%8C%85%E6%8B%AC%E6%97%8B%E8%BD%ACrotate%E3%80%81%E6%89%AD%E6%9B%B2skew%E3%80%81%E7%BC%A9%E6%94%BEscale%E5%92%8C%E7%A7%BB%E5%8A%A8translate%E4%BB%A5%E5%8F%8A%E7%9F%A9%E9%98%B5%E5%8F%98%E5%BD%A2matrix%E3%80%82translate-x-y-%E5%AE%83%E8%A1%A8%E7%A4%BA%E5%AF%B9%E8%B1%A1%E8%BF%9B%E8%A1%8C%E5%B9%B3%E7%A7%BB%EF%BC%8C%E5%BD%93%E5%80%BC%E4%B8%BA%E8%B4%9F%E6%95%B0%E6%97%B6%EF%BC%8C%E5%8F%8D%E6%96%B9%E5%90%91%E7%A7%BB%E5%8A%A8%E7%89%A9%E4%BD%93-translate%E5%8F%AF%E4%BB%A5%E5%9C%A8%E4%B8%8D%E7%9F%A5%E9%81%93%E5%AE%BD%E9%AB%98%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E8%A1%8C%E5%B1%85%E4%B8%AD%EF%BC%8Ctranlate%EF%BC%88%EF%BC%89%E5%87%BD%E6%95%B0%E4%B8%AD%E7%9A%84%E7%99%BE%E5%88%86%E6%AF%94%E6%98%AF%E7%9B%B8%E5%AF%B9%E4%BA%8E%E8%87%AA%E8%BA%AB%E5%AE%BD%E9%AB%98%E7%9A%84%E7%99%BE%E5%88%86%E6%AF%94%EF%BC%8C%E6%89%80%E4%BB%A5%E8%83%BD%E8%BF%9B%E8%A1%8C%E5%B1%85%E4%B8%AD%E3%80%82"><span class="toc-text">Transform:包括旋转rotate、扭曲skew、缩放scale和移动translate以及矩阵变形matrix。translate(x,y),它表示对象进行平移，当值为负数时，反方向移动物体.translate可以在不知道宽高的情况下进行居中，tranlate（）函数中的百分比是相对于自身宽高的百分比，所以能进行居中。</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-%E7%A1%AE%E5%AE%9A%E4%BA%86%E5%BD%93%E5%89%8Ddiv%E7%9A%84%E5%AE%BD%E5%BA%A6%EF%BC%8Cmargin%E5%80%BC%E4%B8%BA%E5%BD%93%E5%89%8Ddiv%E5%AE%BD%E5%BA%A6%E4%B8%80%E5%8D%8A%E7%9A%84%E8%B4%9F%E5%80%BC"><span class="toc-text">3.确定了当前div的宽度，margin值为当前div宽度一半的负值</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-table-cell%E5%AE%9E%E7%8E%B0%E6%B0%B4%E5%B9%B3%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD-table-cell-middle-center%E7%BB%84%E5%90%88%E4%BD%BF%E7%94%A8"><span class="toc-text">4.　table-cell实现水平垂直居中: table-cell middle center组合使用</span></a></li></ol></li></ol></li></ol></li></ol>
+    
+    <div class="picture-container">
+      
+    </div>
+    <h2 id="垂直居中水平居中的几种方法"><a href="#垂直居中水平居中的几种方法" class="headerlink" title="垂直居中水平居中的几种方法"></a>垂直居中水平居中的几种方法</h2><h3 id="方法一：flex布局法"><a href="#方法一：flex布局法" class="headerlink" title="方法一：flex布局法"></a>方法一：flex布局法</h3><h6 id="1-在父级盒子中添加flex-css样式"><a href="#1-在父级盒子中添加flex-css样式" class="headerlink" title="1.在父级盒子中添加flex css样式"></a>1.在父级盒子中添加flex css样式</h6><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">display</span>:flex</span><br><span class="line">justify-content:center;</span><br><span class="line"><span class="attribute">flex-direction</span>:column;/row;<span class="comment">/*垂直或水平*/</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="2-垂直居中"><a href="#2-垂直居中" class="headerlink" title="2.垂直居中"></a>2.垂直居中</h5><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">display</span>: flex;</span><br><span class="line"><span class="attribute">align-items</span>: center;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="方法二：绝对定位法"><a href="#方法二：绝对定位法" class="headerlink" title="方法二：绝对定位法"></a>方法二：绝对定位法</h3><h5 id="1-绝对定位下top-left-right-bottom-都设置0（水平垂直居中）"><a href="#1-绝对定位下top-left-right-bottom-都设置0（水平垂直居中）" class="headerlink" title="1.绝对定位下top left right bottom 都设置0（水平垂直居中）"></a>1.绝对定位下top left right bottom 都设置0（水平垂直居中）</h5><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">position</span>:absolute;</span><br><span class="line"><span class="attribute">left</span>:<span class="number">0</span>;</span><br><span class="line"><span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line"><span class="attribute">bottom</span>: <span class="number">0</span>;</span><br><span class="line"><span class="attribute">right</span>: <span class="number">0</span>;</span><br><span class="line"><span class="attribute">margin</span>: auto;</span><br></pre></td></tr></table></figure>
+
+<h6 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h6><h6 id="Transform-包括旋转rotate、扭曲skew、缩放scale和移动translate以及矩阵变形matrix。translate-x-y-它表示对象进行平移，当值为负数时，反方向移动物体-translate可以在不知道宽高的情况下进行居中，tranlate（）函数中的百分比是相对于自身宽高的百分比，所以能进行居中。"><a href="#Transform-包括旋转rotate、扭曲skew、缩放scale和移动translate以及矩阵变形matrix。translate-x-y-它表示对象进行平移，当值为负数时，反方向移动物体-translate可以在不知道宽高的情况下进行居中，tranlate（）函数中的百分比是相对于自身宽高的百分比，所以能进行居中。" class="headerlink" title="Transform:包括旋转rotate、扭曲skew、缩放scale和移动translate以及矩阵变形matrix。translate(x,y),它表示对象进行平移，当值为负数时，反方向移动物体.translate可以在不知道宽高的情况下进行居中，tranlate（）函数中的百分比是相对于自身宽高的百分比，所以能进行居中。"></a>Transform:包括旋转rotate<strong>、</strong>扭曲skew<strong>、</strong>缩放scale<strong>和</strong>移动translate<strong>以及</strong>矩阵变形matrix。translate(x,y),它表示对象进行平移，当值为负数时，反方向移动物体.translate可以在不知道宽高的情况下进行居中，tranlate（）函数中的百分比是相对于自身宽高的百分比，所以能进行居中。</h6><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">div</span>&#123;</span><br><span class="line">    <span class="attribute">background</span>:red;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">left</span>:<span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">top</span>:<span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">translate</span>(-<span class="number">50%</span>, -<span class="number">50%</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Left:50%;top:50%相当于把盒子的左上角 定位在body的中心。</p>
+<p>设置transform:translate(-50%,-50%),即延X轴和延Y轴均移动50%，对比原图位置，移动后的图如下所示，</p>
+<p><img src="https://img-blog.csdnimg.cn/20210105164742795.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQxMTYxOTgy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<h5 id="3-确定了当前div的宽度，margin值为当前div宽度一半的负值"><a href="#3-确定了当前div的宽度，margin值为当前div宽度一半的负值" class="headerlink" title="3.确定了当前div的宽度，margin值为当前div宽度一半的负值"></a>3.确定了当前div的宽度，margin值为当前div宽度一半的负值</h5><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">div</span>&#123;</span><br><span class="line">  <span class="attribute">width</span>:<span class="number">600px</span>;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">600px</span>;</span><br><span class="line">  <span class="attribute">background</span>:red;</span><br><span class="line">  <span class="attribute">position</span>: absolute;</span><br><span class="line">  <span class="attribute">left</span>:<span class="number">50%</span>;</span><br><span class="line">  <span class="attribute">top</span>:<span class="number">50%</span>;</span><br><span class="line">  <span class="attribute">margin-left</span>:-<span class="number">300px</span>;</span><br><span class="line">  <span class="attribute">margin-top</span>:-<span class="number">300px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-table-cell实现水平垂直居中-table-cell-middle-center组合使用"><a href="#4-table-cell实现水平垂直居中-table-cell-middle-center组合使用" class="headerlink" title="4.　table-cell实现水平垂直居中: table-cell middle center组合使用"></a>4.　table-cell实现水平垂直居中: table-cell middle center组合使用</h5><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="selector-tag">div</span> class=&quot;<span class="selector-tag">table</span>-cell&quot;&gt;</span><br><span class="line">    &lt;<span class="selector-tag">p</span>&gt;我爱你&lt;/<span class="selector-tag">p</span>&gt;</span><br><span class="line">&lt;/<span class="selector-tag">div</span>&gt;</span><br><span class="line"><span class="selector-class">.table-cell</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: table-cell;</span><br><span class="line">    <span class="attribute">vertical-align</span>: middle;</span><br><span class="line">    <span class="attribute">text-align</span>: center;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">240px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">180px</span>;</span><br><span class="line">    <span class="attribute">border</span>:<span class="number">1px</span> solid <span class="number">#666</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="busuanzi center">
+    页阅读量:&nbsp;<span id="busuanzi_value_page_pv"></span>&nbsp;・&nbsp;
+    站访问量:&nbsp;<span id="busuanzi_value_site_pv"></span>&nbsp;・&nbsp;
+    站访客数:&nbsp;<span id="busuanzi_value_site_uv"></span>
+  </div>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"><div class="clearfix">
+</div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+        <svg class="i-caret-right" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+            <path d="M10 30 L26 16 10 2 Z"></path>
+        </svg>
+        </a>
+        © MUMU 2016-2021
+    </div>
+    <div class="secondrow">
+        <a target="_blank" rel="noopener" href="https://github.com/gaoryrt/hexo-theme-pln">
+        Theme Pln
+        </a>
+    </div>
+</div>
+<div class="clearfix">
+</div>
+</footer>
+  <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="/js/search.min.js"></script>
+<script type="text/javascript">
+
+// disqus scripts
+
+
+// dropdown scripts
+$(".dropdown").click(function(event) {
+  var current = $(this);
+  event.stopPropagation();
+  $(current).children(".dropdown-content")[($(current).children(".dropdown-content").hasClass("open"))?'removeClass':'addClass']("open")
+});
+$(document).click(function(){
+    $(".dropdown-content").removeClass("open");
+})
+
+var path = "/search.xml";
+searchFunc(path, 'local-search-input', 'local-search-result');
+
+</script>
+
+</body>
+</html>
