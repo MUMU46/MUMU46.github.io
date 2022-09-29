@@ -21,7 +21,7 @@
 <meta property="article:author" content="MUMU">
 <meta name="twitter:card" content="summary">
   
-    <link rel="alternative" href="/atom.xml" title="MUMU&#39;s blog" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml <!--more-->" title="MUMU&#39;s blog" type="application/atom+xml">
   
   
     <link rel="icon" href="/img/favicon.ico">
@@ -91,11 +91,6 @@
 					        
 						</div>
 						<!-- music -->
-						
-							<!-- <div style="position: absolute; bottom: 120px; left: auto; width: 85%;"> -->
-							<div style="position: absolute; left: auto; width: 85%;">
-								<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=220 height=86 src="//music.163.com/outchain/player?type=2&id=Halfway&auto=1&height=66"></iframe>
-							</div>
 						
 					</nav>
 				</section>
@@ -206,10 +201,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h5 id="ABOUT-ME"><a href="#ABOUT-ME" class="headerlink" title="ABOUT ME"></a>ABOUT ME</h5><h6 id="小白，小白，小白"><a href="#小白，小白，小白" class="headerlink" title="小白，小白，小白"></a>小白，小白，小白</h6><p>华中师范大学大一在读</p>
+        
+        
+            <h5 id="ABOUT-ME"><a href="#ABOUT-ME" class="headerlink" title="ABOUT ME"></a>ABOUT ME</h5><h6 id="小白，小白，小白"><a href="#小白，小白，小白" class="headerlink" title="小白，小白，小白"></a>小白，小白，小白</h6><p>华中师范大学大一在读</p>
 <p>github：<a href="%22https://github.com/MUMU46%22">MUMU46</a></p>
 <p>email：<a href="%22https://mail.qq.com/cgi-bin/frame_html?sid=0gaO4ttDCnMEBGgJ&r=1e984844a87198eec7f62142ceb46da8%22">MUMU46</a></p>
 
+        
       
     </div>
     
@@ -247,20 +245,40 @@
 <script>
 	var yiliaConfig = {
 		fancybox: true,
-		mathjax: false,
+		mathjax: true,
 		animate: true,
 		isHome: false,
 		isPost: false,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
-		open_in_new: false
+		open_in_new: true
 	}
 </script>
 
 <script src="/js/main.js"></script>
 
 
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js"></script>
 
 
   </div>

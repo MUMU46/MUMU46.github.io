@@ -17,7 +17,7 @@
 <meta property="article:author" content="MUMU">
 <meta name="twitter:card" content="summary">
   
-    <link rel="alternative" href="/atom.xml" title="MUMU&#39;s blog" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml <!--more-->" title="MUMU&#39;s blog" type="application/atom+xml">
   
   
     <link rel="icon" href="/img/favicon.ico">
@@ -87,11 +87,6 @@
 					        
 						</div>
 						<!-- music -->
-						
-							<!-- <div style="position: absolute; bottom: 120px; left: auto; width: 85%;"> -->
-							<div style="position: absolute; left: auto; width: 85%;">
-								<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=220 height=86 src="//music.163.com/outchain/player?type=2&id=Halfway&auto=1&height=66"></iframe>
-							</div>
 						
 					</nav>
 				</section>
@@ -409,20 +404,40 @@
 <script>
 	var yiliaConfig = {
 		fancybox: true,
-		mathjax: false,
+		mathjax: true,
 		animate: true,
 		isHome: false,
 		isPost: false,
 		isArchive: true,
 		isTag: false,
 		isCategory: false,
-		open_in_new: false
+		open_in_new: true
 	}
 </script>
 
 <script src="/js/main.js"></script>
 
 
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js"></script>
 
 
   </div>
