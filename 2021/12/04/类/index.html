@@ -1,0 +1,167 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="google-site-verification" content="" />
+  <meta name="referrer" content="unsafe-url">
+  
+  <title>类</title>
+  <meta name="author" content="MUMU">
+  <meta name="description" content="类类定义了一个有具体方法和属性的对象，这个对象叫做类的实例；创建类的实例，需要创建一个派生自适当原型的对象，且具有相应的属性。
+12345function makeRabbit(type) &amp;#123;  let rabbit = Object.create(protoRabbit);  rabbi">
+  
+  
+  <meta property="og:title" content="类"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="MUMU&#39;s blog"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/atom.xml" title="MUMU&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/m.min.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/" class="back black-color">
+    <svg class="i-close" viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+        <path d="M2 30 L30 2 M30 30 L2 2"></path>
+    </svg>
+  </a>
+  
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title center">
+        类
+    </h1>
+  
+
+
+    </div>
+    <div class="meta center">
+      <time datetime="2021-12-04T03:35:12.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2021-12-04
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/tags/JS/">JS</a>
+
+
+    </div>
+    <hr>
+    
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B1%BB"><span class="toc-text">类</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E7%B1%BB%E5%AE%9A%E4%B9%89%E4%BA%86%E4%B8%80%E4%B8%AA%E6%9C%89%E5%85%B7%E4%BD%93%E6%96%B9%E6%B3%95%E5%92%8C%E5%B1%9E%E6%80%A7%E7%9A%84%E5%AF%B9%E8%B1%A1%EF%BC%8C%E8%BF%99%E4%B8%AA%E5%AF%B9%E8%B1%A1%E5%8F%AB%E5%81%9A%E7%B1%BB%E7%9A%84%E5%AE%9E%E4%BE%8B%EF%BC%9B"><span class="toc-text">类定义了一个有具体方法和属性的对象，这个对象叫做类的实例；</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-text">构造函数</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E8%AF%8Dnew%E6%94%BE%E5%9C%A8%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E5%89%8D%E9%9D%A2%EF%BC%8C%E6%AD%A4%E5%87%BD%E6%95%B0%E4%B8%BA%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E3%80%82%E9%80%9A%E8%BF%87prototype%E5%B1%9E%E6%80%A7%E8%8E%B7%E5%BE%97%E5%8E%9F%E5%9E%8B%E5%AF%B9%E8%B1%A1%E3%80%82"><span class="toc-text">关键词new放在函数调用前面，此函数为构造函数。通过prototype属性获得原型对象。</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%81%94%E5%90%88%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%92%8C%E5%8E%9F%E5%9E%8B%E6%96%B9%E5%BC%8F"><span class="toc-text">联合构造函数和原型方式</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%8D%B3%E7%94%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%AE%9A%E4%B9%89%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%89%80%E6%9C%89%E9%9D%9E%E5%87%BD%E6%95%B0%E5%B1%9E%E6%80%A7%EF%BC%8C%E7%94%A8%E5%8E%9F%E5%9E%8B%E6%96%B9%E5%BC%8F%E5%AE%9A%E4%B9%89%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%87%BD%E6%95%B0%E5%B1%9E%E6%80%A7%EF%BC%88%E6%96%B9%E6%B3%95%EF%BC%89%E3%80%82"><span class="toc-text">即用构造函数定义对象的所有非函数属性，用原型方式定义对象的函数属性（方法）。</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8E%9F%E5%9E%8B%E5%85%B3%E7%B3%BB"><span class="toc-text">原型关系</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B1%BB%E8%A1%A8%E7%A4%BA%E6%B3%95"><span class="toc-text">类表示法</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#class%E5%85%B3%E9%94%AE%E5%AD%97%E5%BC%80%E5%A7%8B%E4%B8%80%E4%B8%AA%E5%A3%B0%E6%98%8E%EF%BC%8C%E5%8F%AF%E4%BB%A5%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%EF%BC%88constructor%EF%BC%89%E5%92%8C%E4%B8%80%E7%BB%84%E6%96%B9%E6%B3%95%E3%80%82%EF%BC%88%E5%8F%AF%E4%BB%A5%E5%86%99%E4%BB%BB%E6%84%8F%E6%95%B0%E9%87%8F%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%8C%E4%BB%BB%E6%84%8F%E5%AE%9E%E4%BE%8B%E5%8C%96%E7%9A%84%E5%AF%B9%E8%B1%A1%E9%83%BD%E5%8F%AF%E4%BB%A5%E8%B0%83%E7%94%A8%EF%BC%89"><span class="toc-text">class关键字开始一个声明，可以定义一个构造函数（constructor）和一组方法。（可以写任意数量的方法，任意实例化的对象都可以调用）</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E7%B1%BB%E5%A3%B0%E6%98%8E%E5%BD%93%E5%89%8D%E5%8F%AA%E5%85%81%E8%AE%B8%E5%B0%86%E6%96%B9%E6%B3%95%E6%B7%BB%E5%8A%A0%E5%88%B0%E5%8E%9F%E5%9E%8B%E4%B8%AD%E3%80%82%E4%BD%86%E5%8F%AF%E4%BB%A5%E5%9C%A8class%E5%AE%9A%E4%B9%89%E4%B9%8B%E5%90%8E%E7%9B%B4%E6%8E%A5%E6%93%8D%E4%BD%9C%E5%8E%9F%E5%9E%8B%E6%9D%A5%E5%88%9B%E5%BB%BA%E9%9D%9E%E5%87%BD%E6%95%B0%E5%B1%9E%E6%80%A7%E3%80%82%E6%AF%94%E5%A6%82%EF%BC%9A"><span class="toc-text">类声明当前只允许将方法添加到原型中。但可以在class定义之后直接操作原型来创建非函数属性。比如：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E7%B1%BB%E6%AF%94founction%EF%BC%8Cclass%E5%8F%AF%E4%BB%A5%E5%9C%A8%E8%AF%AD%E5%8F%A5%E5%92%8C%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%B8%AD%E4%BD%BF%E7%94%A8%E3%80%82%E7%94%A8%E4%BD%9C%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%97%B6%EF%BC%8C%E4%B8%8D%E5%AE%9A%E4%B9%89%E7%BB%91%E5%AE%9A%EF%BC%8C%E5%8F%AA%E6%98%AF%E5%B0%86%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E4%BD%9C%E4%B8%BA%E5%80%BC%E7%94%9F%E6%88%90%E3%80%82%E5%8F%AF%E4%BB%A5%E5%9C%A8%E7%B1%BB%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%B8%AD%E7%9C%81%E7%95%A5%E7%B1%BB%E5%90%8D%E3%80%82"><span class="toc-text">类比founction，class可以在语句和表达式中使用。用作表达式时，不定义绑定，只是将构造函数作为值生成。可以在类表达式中省略类名。</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li></ol>
+    
+    <div class="picture-container">
+      
+    </div>
+    <h1 id="类"><a href="#类" class="headerlink" title="类"></a>类</h1><h6 id="类定义了一个有具体方法和属性的对象，这个对象叫做类的实例；"><a href="#类定义了一个有具体方法和属性的对象，这个对象叫做类的实例；" class="headerlink" title="类定义了一个有具体方法和属性的对象，这个对象叫做类的实例；"></a>类定义了一个有具体方法和属性的对象，这个对象叫做类的实例；</h6><p>创建类的实例，需要创建一个派生自适当原型的对象，且具有相应的属性。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">makeRabbit</span>(<span class="params">type</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> rabbit = <span class="built_in">Object</span>.create(protoRabbit);</span><br><span class="line">  rabbit.type = type;</span><br><span class="line">  <span class="keyword">return</span> rabbit;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4><h6 id="关键词new放在函数调用前面，此函数为构造函数。通过prototype属性获得原型对象。"><a href="#关键词new放在函数调用前面，此函数为构造函数。通过prototype属性获得原型对象。" class="headerlink" title="关键词new放在函数调用前面，此函数为构造函数。通过prototype属性获得原型对象。"></a>关键词new放在函数调用前面，此函数为构造函数。通过prototype属性获得原型对象。</h6><p>构造函数是生成对象的模板，一个构造函数可以生成多个对象，每个对象都有相同的结构。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Car</span>(<span class="params">sColor,iDoors,iMpg</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.color = sColor;</span><br><span class="line">  <span class="built_in">this</span>.doors = iDoors;</span><br><span class="line">  <span class="built_in">this</span>.mpg = iMpg;</span><br><span class="line">  <span class="built_in">this</span>.showColor = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    alert(<span class="built_in">this</span>.color);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> oCar1 = <span class="keyword">new</span> Car(<span class="string">&quot;red&quot;</span>,<span class="number">4</span>,<span class="number">23</span>);</span><br><span class="line"><span class="keyword">var</span> oCar2 = <span class="keyword">new</span> Car(<span class="string">&quot;blue&quot;</span>,<span class="number">3</span>,<span class="number">25</span>);</span><br></pre></td></tr></table></figure>
+
+<p>在构造函数内没有创建对象，而是使用 this 关键字。</p>
+<h4 id="联合构造函数和原型方式"><a href="#联合构造函数和原型方式" class="headerlink" title="联合构造函数和原型方式"></a>联合构造函数和原型方式</h4><h6 id="即用构造函数定义对象的所有非函数属性，用原型方式定义对象的函数属性（方法）。"><a href="#即用构造函数定义对象的所有非函数属性，用原型方式定义对象的函数属性（方法）。" class="headerlink" title="即用构造函数定义对象的所有非函数属性，用原型方式定义对象的函数属性（方法）。"></a>即用构造函数定义对象的所有非函数属性，用原型方式定义对象的函数属性（方法）。</h6><p>构造函数本身的属性无法被对象实例共享，而原型对象上的属性和方法可以被所用对象实例所共享。</p>
+<p>函数都有prototype属性，此属性默认包含一个普通空对象。则</p>
+<p>可以通过给 Rabbit的 prototype 属性添加属性去定义 Rabbit 对象的属性。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Rabbit</span>(<span class="params">type</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.type = type;</span><br><span class="line">&#125;<span class="comment">//属性  放自定义实例特殊的属性或者方法</span></span><br><span class="line">Rabbit.prototype.speak = <span class="function"><span class="keyword">function</span>(<span class="params">line</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`The <span class="subst">$&#123;<span class="built_in">this</span>.type&#125;</span> rabbit says &#x27;<span class="subst">$&#123;line&#125;</span>&#x27;`</span>);</span><br><span class="line">&#125;;<span class="comment">//方法   放通用的一些属性或方法</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> weirdRabbit = <span class="keyword">new</span> Rabbit(<span class="string">&quot;weird&quot;</span>);</span><br><span class="line">weirdRabbit.speak(<span class="string">&quot;Hahaha!&quot;</span>);<span class="comment">//调用方法</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> killerRabbit = <span class="keyword">new</span> Rabbit(<span class="string">&quot;killer&quot;</span>);</span><br><span class="line">killerRabbit.speak(<span class="string">&quot;SKREEEE!&quot;</span>);</span><br><span class="line"><span class="comment">//--&gt;</span></span><br><span class="line">The weird rabbit says <span class="string">&#x27;Hahaha!&#x27;</span></span><br><span class="line">The killer rabbit says <span class="string">&#x27;SKREEEE!&#x27;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>详见<a target="_blank" rel="noopener" href="https://www.w3school.com.cn/js/pro_js_object_defining.asp">https://www.w3school.com.cn/js/pro_js_object_defining.asp</a></p>
+<p>一般我们定义构造函数的名字开头为大写，告诉别人这是一个抽象的类。</p>
+<h5 id="原型关系"><a href="#原型关系" class="headerlink" title="原型关系"></a>原型关系</h5><p>Function   =&gt;   Rabbit   =&gt;   weirdRabbit<br>函数              构造函数         实例</p>
+<h1 id="类表示法"><a href="#类表示法" class="headerlink" title="类表示法"></a>类表示法</h1><h6 id="class关键字开始一个声明，可以定义一个构造函数（constructor）和一组方法。（可以写任意数量的方法，任意实例化的对象都可以调用）"><a href="#class关键字开始一个声明，可以定义一个构造函数（constructor）和一组方法。（可以写任意数量的方法，任意实例化的对象都可以调用）" class="headerlink" title="class关键字开始一个声明，可以定义一个构造函数（constructor）和一组方法。（可以写任意数量的方法，任意实例化的对象都可以调用）"></a>class关键字开始一个声明，可以定义一个构造函数（constructor）和一组方法。（可以写任意数量的方法，任意实例化的对象都可以调用）</h6><h6 id="类声明当前只允许将方法添加到原型中。但可以在class定义之后直接操作原型来创建非函数属性。比如："><a href="#类声明当前只允许将方法添加到原型中。但可以在class定义之后直接操作原型来创建非函数属性。比如：" class="headerlink" title="类声明当前只允许将方法添加到原型中。但可以在class定义之后直接操作原型来创建非函数属性。比如："></a>类声明当前只允许将方法添加到原型中。但可以在class定义之后直接操作原型来创建非函数属性。比如：</h6><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rabbit</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params">type</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.type = type;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="title">speak</span>(<span class="params">line</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`The <span class="subst">$&#123;<span class="built_in">this</span>.type&#125;</span> rabbit says &#x27;<span class="subst">$&#123;line&#125;</span>&#x27;`</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">  <span class="comment">//Rabbit.prototype.color=&quot;black&quot;</span></span><br><span class="line"><span class="keyword">let</span> killerRabbit = <span class="keyword">new</span> Rabbit(<span class="string">&quot;killer&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> blackRabbit = <span class="keyword">new</span> Rabbit(<span class="string">&quot;black&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h6 id="类比founction，class可以在语句和表达式中使用。用作表达式时，不定义绑定，只是将构造函数作为值生成。可以在类表达式中省略类名。"><a href="#类比founction，class可以在语句和表达式中使用。用作表达式时，不定义绑定，只是将构造函数作为值生成。可以在类表达式中省略类名。" class="headerlink" title="类比founction，class可以在语句和表达式中使用。用作表达式时，不定义绑定，只是将构造函数作为值生成。可以在类表达式中省略类名。"></a>类比founction，class可以在语句和表达式中使用。用作表达式时，不定义绑定，只是将构造函数作为值生成。可以在类表达式中省略类名。</h6><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> <span class="class"><span class="keyword">class</span> <span class="title">Rabbit</span></span>&#123;...&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2</span> <span class="keyword">let</span> object = <span class="keyword">new</span> <span class="class"><span class="keyword">class</span> </span>&#123; <span class="function"><span class="title">getWord</span>(<span class="params"></span>)</span> &#123; <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>; &#125; &#125;;</span><br><span class="line">  <span class="built_in">console</span>.log(object.getWord());</span><br><span class="line">  <span class="comment">// → hello</span></span><br></pre></td></tr></table></figure>
+
+
+
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="busuanzi center">
+    页阅读量:&nbsp;<span id="busuanzi_value_page_pv"></span>&nbsp;・&nbsp;
+    站访问量:&nbsp;<span id="busuanzi_value_site_pv"></span>&nbsp;・&nbsp;
+    站访客数:&nbsp;<span id="busuanzi_value_site_uv"></span>
+  </div>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"><div class="clearfix">
+</div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+        <svg class="i-caret-right" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+            <path d="M10 30 L26 16 10 2 Z"></path>
+        </svg>
+        </a>
+        © MUMU 2016-2021
+    </div>
+    <div class="secondrow">
+        <a target="_blank" rel="noopener" href="https://github.com/gaoryrt/hexo-theme-pln">
+        Theme Pln
+        </a>
+    </div>
+</div>
+<div class="clearfix">
+</div>
+</footer>
+  <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="/js/search.min.js"></script>
+<script type="text/javascript">
+
+// disqus scripts
+
+
+// dropdown scripts
+$(".dropdown").click(function(event) {
+  var current = $(this);
+  event.stopPropagation();
+  $(current).children(".dropdown-content")[($(current).children(".dropdown-content").hasClass("open"))?'removeClass':'addClass']("open")
+});
+$(document).click(function(){
+    $(".dropdown-content").removeClass("open");
+})
+
+var path = "/search.xml";
+searchFunc(path, 'local-search-input', 'local-search-result');
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="google-site-verification" content="" />
+  <meta name="referrer" content="unsafe-url">
+  
+  <title>网络请求及fetch使用</title>
+  <meta name="author" content="MUMU">
+  <meta name="description" content="网络请求及fetch使用四种请求
+GET
+GET 请求会向数据库发索取数据的请求，从而来获取信息，该请求就像数据库的 select 操作一样，只是用来查询一下数据，不会修改、增加数据，不会影响资源的内容，即该请求不会产生副作用。无论进行多少次操作，结果都是一样的。
+
+PUT
+PUT 请求是向服务器端">
+  
+  
+  <meta property="og:title" content="网络请求及fetch使用"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="MUMU&#39;s blog"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/atom.xml" title="MUMU&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/m.min.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/" class="back black-color">
+    <svg class="i-close" viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+        <path d="M2 30 L30 2 M30 30 L2 2"></path>
+    </svg>
+  </a>
+  
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title center">
+        网络请求及fetch使用
+    </h1>
+  
+
+
+    </div>
+    <div class="meta center">
+      <time datetime="2023-01-07T11:30:56.000Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2023-01-07
+</time>
+
+
+
+
+
+    
+    &nbsp;
+    <svg class="i-tag" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <circle cx="24" cy="8" r="2"></circle>
+      <path d="M2 18 L18 2 30 2 30 14 14 30 Z"></path>
+    </svg>
+    &nbsp;
+    <a href="/tags/Fetch/">Fetch</a>·<a href="/tags/http/">http</a>
+
+
+    </div>
+    <hr>
+    
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E5%8F%8Afetch%E4%BD%BF%E7%94%A8"><span class="toc-text">网络请求及fetch使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E7%A7%8D%E8%AF%B7%E6%B1%82"><span class="toc-text">四种请求</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%97%A2%E7%84%B6-PUT-%E5%92%8C-POST-%E6%93%8D%E4%BD%9C%E9%83%BD%E6%98%AF%E5%90%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%E7%9A%84%EF%BC%8C%E9%82%A3%E4%B9%88%E4%B8%A4%E8%80%85%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%E5%91%A2"><span class="toc-text">既然 PUT 和 POST 操作都是向服务器端发送数据的，那么两者有什么区别呢?</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fetch-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-text">fetch() 是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E4%BD%BF%E7%94%A8%EF%BC%9F"><span class="toc-text">怎么使用？</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#2%E3%80%81%E9%85%8D%E7%BD%AE%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E"><span class="toc-text">2、配置详细说明</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96"><span class="toc-text">其他</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#fetch-%E4%B8%8E-jQuery-ajax-%E7%9A%84%E4%B8%8D%E5%90%8C%E7%82%B9"><span class="toc-text">fetch 与 jQuery.ajax() 的不同点</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li></ol>
+    
+    <div class="picture-container">
+      
+    </div>
+    <h1 id="网络请求及fetch使用"><a href="#网络请求及fetch使用" class="headerlink" title="网络请求及fetch使用"></a>网络请求及fetch使用</h1><h3 id="四种请求"><a href="#四种请求" class="headerlink" title="四种请求"></a>四种请求</h3><ul>
+<li><p><strong>GET</strong></p>
+<p>GET 请求会向数据库发索取数据的请求，从而来获取信息，该请求就像数据库的 select 操作一样，只是用来查询一下数据，不会修改、增加数据，不会影响资源的内容，即该请求不会产生副作用。无论进行多少次操作，结果都是一样的。</p>
+</li>
+<li><p><strong>PUT</strong></p>
+<p>PUT 请求是向服务器端发送数据的（与 GET 不同）从而改变信息，该请求就像数据库的 update 操作一样，用来修改数据的内容，但是不会增加数据的种类等，也就是说无论进行多少次 PUT 操作，其结果并没有不同。</p>
+</li>
+<li><p><strong>POST</strong></p>
+</li>
+</ul>
+<p>​        POST 请求同 PUT 请求类似，都是向服务器端发送数据的，但是该请求会改变数据的种类等资源，就像数        据库的 insert 操作一样，会创建新的内容。几乎目前所有的提交操作都是用 POST 请求的。</p>
+<ul>
+<li><strong>DELETE</strong></li>
+</ul>
+<p>​        DELETE 请求顾名思义，就是用来删除某一个资源的，该请求就像数据库的 delete 操作。</p>
+<h6 id="既然-PUT-和-POST-操作都是向服务器端发送数据的，那么两者有什么区别呢"><a href="#既然-PUT-和-POST-操作都是向服务器端发送数据的，那么两者有什么区别呢" class="headerlink" title="既然 PUT 和 POST 操作都是向服务器端发送数据的，那么两者有什么区别呢?"></a>既然 PUT 和 POST 操作都是向服务器端发送数据的，那么两者有什么区别呢?</h6><p>我们可以这样理解：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">POST    /url     		创建  </span><br><span class="line">DELETE  /url/xxx  		删除  </span><br><span class="line">PUT     /url/xxx 	 	更新</span><br><span class="line">GET     /url/xxx  		查看</span><br></pre></td></tr></table></figure>
+
+<p>总之，Get 是向服务器发索取数据的一种请求，而 Post 是向服务器提交数据的一种请求，在 FORM（表单）中，Method默认为 “GET”，实质上，GET 和 POST 只是发送机制不同，并不是一个取一个发。</p>
+<h3 id="fetch-是什么？"><a href="#fetch-是什么？" class="headerlink" title="fetch() 是什么？"></a>fetch() 是什么？</h3><p>fetch() 是 浏览器内置的 全局 JavaScript 方法，用于发出 http 请求</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 一个简单 http 请求</span></span><br><span class="line">fetch(<span class="string">&#x27;http://example.com/movies.json&#x27;</span>)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span> (<span class="params">response</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> response.json();</span><br><span class="line">    &#125;)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span> (<span class="params">myJson</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(myJson);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Fetch API 是基于 Promise 设计，有必要先学习一下 Promise</li>
+<li>Fetch 优点主要有：<ol>
+<li>语法简洁，更加语义化</li>
+<li>基于标准 Promise 实现，支持 async(异步)/await<ul>
+<li><code>await</code> 后面可以跟 Promise 对象，表示等待 Promise <code>resolve()</code> 才会继续向下执行，如果 Promise 被 <code>reject()</code> 或抛出异常则会被外面的 <code>try...catch</code> 捕获。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="怎么使用？"><a href="#怎么使用？" class="headerlink" title="怎么使用？"></a>怎么使用？</h3><p><strong>使用实例：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">postData(<span class="string">&#x27;http://example.com/answer&#x27;</span>, &#123; <span class="attr">answer</span>: <span class="number">42</span> &#125;)</span><br><span class="line">    .then(<span class="function"><span class="params">data</span> =&gt;</span> <span class="built_in">console</span>.log(data))</span><br><span class="line">    .catch(<span class="function"><span class="params">error</span> =&gt;</span> <span class="built_in">console</span>.error(“<span class="built_in">Error</span>:”，error))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">postData</span>(<span class="params">url, data</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> fetch(url, &#123;</span><br><span class="line">        <span class="attr">body</span>: <span class="built_in">JSON</span>.stringify(data),</span><br><span class="line">        <span class="attr">cache</span>: <span class="string">&#x27;no-cache&#x27;</span>,</span><br><span class="line">        <span class="attr">credentials</span>: <span class="string">&#x27;same-origin&#x27;</span>,</span><br><span class="line">        <span class="attr">headers</span>: &#123;								</span><br><span class="line">            <span class="string">&#x27;content-type&#x27;</span>: <span class="string">&#x27;application/json&#x27;</span>	,</span><br><span class="line">          	<span class="comment">//&#x27;Authorization&#x27;:token</span></span><br><span class="line">        &#125;,												</span><br><span class="line">        <span class="attr">method</span>: <span class="string">&#x27;POST&#x27;</span>,						<span class="comment">//也可以是GET，PUT,DELETE等</span></span><br><span class="line">        <span class="attr">mode</span>: <span class="string">&#x27;cors&#x27;</span>,</span><br><span class="line">        <span class="attr">redirect</span>: <span class="string">&#x27;follow&#x27;</span>,</span><br><span class="line">        <span class="attr">referrer</span>: <span class="string">&#x27;no-referrer&#x27;</span>,</span><br><span class="line">    &#125;)</span><br><span class="line">        .then(<span class="function"><span class="params">response</span> =&gt;</span> response.json())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>tips：</p>
+<ul>
+<li><p>第一个<code>.then</code>接收到的是<code>Promise</code>数据集</p>
+</li>
+<li><p>需要被<code>.then</code>处理才可以看到我们最终想要的数据。</p>
+</li>
+</ul>
+<h6 id="2、配置详细说明"><a href="#2、配置详细说明" class="headerlink" title="2、配置详细说明"></a>2、配置详细说明</h6><ul>
+<li><code>method</code>：请求使用的方法，如 GET、POST、PUT、DELETE 等。</li>
+<li><code>headers</code>：请求的头信息。</li>
+<li><code>body</code>：请求的 body 信息，注意 GET 或 HEAD 方法的请求不能包含 body 信息。</li>
+<li><code>mode</code>：请求模式，可用值： cors、no-cors、same-origin</li>
+<li><code>credentials</code>：是否发送 cookie 给服务器：omit(任何情况都不发)、same-origin(同源才发)、include(任何情况都发)</li>
+<li><code>cache</code>：可用 cache 模式 ：default、no-store、reload、no-cache、force-cache、only-if-cached 。</li>
+<li><code>redirect</code>：重定向，Chrome中默认使用 follow ；<ul>
+<li>follow (自动重定向)</li>
+<li>error (发生重定向将自动终止并且抛出错误)</li>
+<li>manual (手动处理重定向)</li>
+</ul>
+</li>
+<li><code>referrer</code>：发送请求的页面URL，浏览器默认添加到请求Header 中。设置成 <code>no-referrer</code>表示不添加。</li>
+<li><code>referrerPolicy</code>：什么时候使用 referrer，可用值： no-referrer、 no-referrer-when-downgrade、origin、origin-when-cross-origin、unsafe-url 。</li>
+<li><code>integrity</code>：设定资源对应 hash 值，保证资源的完整性。</li>
+</ul>
+<hr>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span>  <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">postData</span> (<span class="params">url = <span class="string">&#x27;&#x27;</span>, data = &#123;&#125;,method: <span class="string">&#x27;POST&#x27;</span></span>)</span>&#123;</span><br><span class="line">    <span class="comment">// Default options are marked with *</span></span><br><span class="line">    <span class="keyword">const</span> preurl=<span class="string">&#x27;/api/v1&#x27;</span>;</span><br><span class="line">    <span class="keyword">const</span> token = <span class="built_in">localStorage</span>.getItem(<span class="string">&#x27;token&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span>(!token)&#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> response = <span class="keyword">await</span> fetch(preurl+url, &#123;</span><br><span class="line">      method, </span><br><span class="line">      <span class="attr">headers</span>: &#123;</span><br><span class="line">        <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;application/json;charset=utf-8&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Authorization&#x27;</span>:token</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">body</span>: <span class="built_in">JSON</span>.stringify(data) <span class="comment">// body data type must match &quot;Content-Type&quot; header</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> response.json(); <span class="comment">// parses JSON response into native JavaScript objects</span></span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">export</span>  <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">getJson</span> (<span class="params">url = <span class="string">&#x27;&#x27;</span></span>)</span>&#123;</span><br><span class="line">    <span class="comment">// Default options are marked with *</span></span><br><span class="line">    <span class="keyword">const</span> preurl=<span class="string">&#x27;/api/v1&#x27;</span>;</span><br><span class="line">    <span class="keyword">const</span> token = <span class="built_in">localStorage</span>.getItem(<span class="string">&#x27;token&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span>(!token)&#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> response = <span class="keyword">await</span> fetch(preurl+url, &#123;</span><br><span class="line">      <span class="attr">method</span>:<span class="string">&#x27;GET&#x27;</span>, </span><br><span class="line">      <span class="attr">headers</span>: &#123;</span><br><span class="line">        <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;application/json;charset=utf-8&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Authorization&#x27;</span>:token</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">redirect</span>: <span class="string">&#x27;follow&#x27;</span>, <span class="comment">// manual, *follow, error</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> response.json(); <span class="comment">// parses JSON response into native JavaScript objects</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h6 id="fetch-与-jQuery-ajax-的不同点"><a href="#fetch-与-jQuery-ajax-的不同点" class="headerlink" title="fetch 与 jQuery.ajax() 的不同点"></a>fetch 与 jQuery.ajax() 的不同点</h6><ul>
+<li>fetch() 收到代表错误的 HTTP 状态码（譬如404 或500），会设置 Promise 的 resolve 值为false，但不会reject，只有 网络故障 或 请求被阻止 才会 reject。</li>
+<li>fetch() 可以接受跨域 cookies 和 建立跨域会话。</li>
+<li>fetch() 只有使用了credentials 选项，才会发送 cookies，但要符合同源( same-origin)规则。</li>
+</ul>
+
+
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="busuanzi center">
+    页阅读量:&nbsp;<span id="busuanzi_value_page_pv"></span>&nbsp;・&nbsp;
+    站访问量:&nbsp;<span id="busuanzi_value_site_pv"></span>&nbsp;・&nbsp;
+    站访客数:&nbsp;<span id="busuanzi_value_site_uv"></span>
+  </div>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"><div class="clearfix">
+</div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+        <svg class="i-caret-right" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+            <path d="M10 30 L26 16 10 2 Z"></path>
+        </svg>
+        </a>
+        © MUMU 2016-2021
+    </div>
+    <div class="secondrow">
+        <a target="_blank" rel="noopener" href="https://github.com/gaoryrt/hexo-theme-pln">
+        Theme Pln
+        </a>
+    </div>
+</div>
+<div class="clearfix">
+</div>
+</footer>
+  <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="/js/search.min.js"></script>
+<script type="text/javascript">
+
+// disqus scripts
+
+
+// dropdown scripts
+$(".dropdown").click(function(event) {
+  var current = $(this);
+  event.stopPropagation();
+  $(current).children(".dropdown-content")[($(current).children(".dropdown-content").hasClass("open"))?'removeClass':'addClass']("open")
+});
+$(document).click(function(){
+    $(".dropdown-content").removeClass("open");
+})
+
+var path = "/search.xml";
+searchFunc(path, 'local-search-input', 'local-search-result');
+
+</script>
+
+</body>
+</html>

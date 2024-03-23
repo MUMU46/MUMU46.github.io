@@ -1,0 +1,197 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="google-site-verification" content="" />
+  <meta name="referrer" content="unsafe-url">
+  
+  <title>MUMU&#39;s blog</title>
+  <meta name="author" content="MUMU">
+  <meta name="description" content="存储管理段式存储管理内存划分
+动态划分不同的段长
+按逻辑上有意义的段来划分
+一个程序全部段号从0开始编号, 段内从0开始编址.
+
+逻辑地址: 段号+段内地址
+内存分配​    一个逻辑段分配一个连续的内存区.
+段表记录用户程序的逻辑段与内存物理段之间的对应关系.
+包括 逻辑段号(S)、独立段起始地址">
+  
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="MUMU&#39;s blog"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/atom.xml" title="MUMU&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/m.min.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/" class="back black-color">
+    <svg class="i-close" viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+        <path d="M2 30 L30 2 M30 30 L2 2"></path>
+    </svg>
+  </a>
+  
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title center">
+        
+    </h1>
+  
+
+
+    </div>
+    <div class="meta center">
+      <time datetime="2023-12-02T14:18:40.331Z" itemprop="datePublished">
+  <svg class="i-calendar" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <path d="M2 6 L2 30 30 30 30 6 Z M2 15 L30 15 M7 3 L7 9 M13 3 L13 9 M19 3 L19 9 M25 3 L25 9"></path>
+  </svg>
+  &nbsp;
+  2023-12-02
+</time>
+
+
+
+
+
+
+    </div>
+    <hr>
+    
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86"><span class="toc-text">存储管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AE%B5%E5%BC%8F%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86"><span class="toc-text">段式存储管理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%88%92%E5%88%86"><span class="toc-text">内存划分</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D"><span class="toc-text">内存分配</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AE%B5%E8%A1%A8"><span class="toc-text">段表</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6%E6%94%AF%E6%8C%81"><span class="toc-text">硬件支持</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%BF%AB%E8%A1%A8%E6%8A%80%E6%9C%AF"><span class="toc-text">快表技术:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%9C%B0%E5%9D%80%E6%98%A0%E5%B0%84"><span class="toc-text">地址映射</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-text">优点</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-text">缺点</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AE%B5%E9%A1%B5%E5%BC%8F%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86"><span class="toc-text">段页式存储管理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6%E6%94%AF%E6%8C%81-1"><span class="toc-text">硬件支持:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%BF%AB%E8%A1%A8"><span class="toc-text">快表</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A6%86%E7%9B%96%E6%8A%80%E6%9C%AF%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%8A%80%E6%9C%AF"><span class="toc-text">覆盖技术与交换技术</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A6%86%E7%9B%96%E6%8A%80%E6%9C%AF"><span class="toc-text">覆盖技术</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E6%8D%A2%E6%8A%80%E6%9C%AF"><span class="toc-text">交换技术</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86"><span class="toc-text">虚拟存储管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E9%A1%B5%E5%BC%8F%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="toc-text">虚拟页式内存管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E9%A1%B5%E4%B8%AD%E6%96%AD"><span class="toc-text">缺页中断</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95"><span class="toc-text">页面置换算法</span></a></li></ol></li></ol></li></ol></li></ol>
+    
+    <div class="picture-container">
+      
+    </div>
+    <h1 id="存储管理"><a href="#存储管理" class="headerlink" title="存储管理"></a>存储管理</h1><h2 id="段式存储管理"><a href="#段式存储管理" class="headerlink" title="段式存储管理"></a>段式存储管理</h2><h5 id="内存划分"><a href="#内存划分" class="headerlink" title="内存划分"></a>内存划分</h5><ul>
+<li>动态划分不同的段长</li>
+<li>按逻辑上有意义的段来划分</li>
+<li>一个程序全部段号从0开始编号, 段内从0开始编址.</li>
+</ul>
+<p>逻辑地址: 段号+段内地址</p>
+<h5 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h5><p>​    一个逻辑段分配一个连续的内存区.</p>
+<h5 id="段表"><a href="#段表" class="headerlink" title="段表"></a>段表</h5><p>记录用户程序的逻辑段与内存物理段之间的对应关系.</p>
+<p>包括 逻辑段号(S)、独立段起始地址(Sʙ)和物理段长度(Sʟ).</p>
+<h5 id="硬件支持"><a href="#硬件支持" class="headerlink" title="硬件支持"></a>硬件支持</h5><p>一对寄存器: 段表始址寄存器、段表长度寄存器.</p>
+<p>段表始址寄存器: 保存正在运行的进程的段表在内存的首地址</p>
+<p>段表长度寄存器: 正在运行的进程的段表的长度</p>
+<h5 id="快表技术"><a href="#快表技术" class="headerlink" title="快表技术:"></a>快表技术:</h5><p>使用一组相联存储器,保存正在运行进程段表的活跃<strong>子表</strong>.</p>
+<h5 id="地址映射"><a href="#地址映射" class="headerlink" title="地址映射"></a>地址映射</h5><p>两个分支:</p>
+<ul>
+<li>检查快表<ul>
+<li>根据段号S查找快表, 如果找到,检查段内地址D是否超过段长Sʟ.不超过则得到Sʙ+D形成物理地址.</li>
+</ul>
+</li>
+<li>检查内存段表<ul>
+<li>查找段S前, 先将段号S与段表长度寄存器内容L比较, 检查是否越界</li>
+<li>S&lt;L, 访问段表始址寄存器,找到段表起始地址, 开始访问段表, 在段表中找到段S, 得到对应的段起始地址Sʙ.</li>
+<li>将D与段表中对应的段长度比较.不超过则得到Sʙ+D形成物理地址.</li>
+</ul>
+</li>
+</ul>
+<h5 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h5><p>便于动态申请内存, 管理和使用统一化</p>
+<h5 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h5><p>存在碎片问题</p>
+<h2 id="段页式存储管理"><a href="#段页式存储管理" class="headerlink" title="段页式存储管理"></a>段页式存储管理</h2><p>用页式方法分配和管理内存; 用段式方法将用户程序按照逻辑关系划分成若干段, 再按照划分内存页面的大小, 把每一段划分为若干大小相等的页面.</p>
+<p>逻辑地址组成:</p>
+<p><img src="https://s2.loli.net/2023/12/02/2P59ScJfk6TGdhi.jpg" alt="IMG_B747A774FA8A-1"></p>
+<p>内存空间的最小单位是页.</p>
+<h5 id="硬件支持-1"><a href="#硬件支持-1" class="headerlink" title="硬件支持:"></a>硬件支持:</h5><p>段表始址寄存器、段表长度寄存器.</p>
+<h5 id="快表"><a href="#快表" class="headerlink" title="快表"></a>快表</h5><blockquote>
+<p>因为这样需要访问内存三次:查段表地址寄存器访问段表、取出对应页表地址; 访问页表的对应内存块好行程物理地址; 访问物理单元.</p>
+<p>为了提高地址转换速度, 就更需要设置快表.</p>
+</blockquote>
+<p>快表中存放最常用的段号S、页号P、对应的内存块和其他控制用栏目.</p>
+<h2 id="覆盖技术与交换技术"><a href="#覆盖技术与交换技术" class="headerlink" title="覆盖技术与交换技术"></a>覆盖技术与交换技术</h2><h4 id="覆盖技术"><a href="#覆盖技术" class="headerlink" title="覆盖技术"></a>覆盖技术</h4><p>覆盖技术是把程序话分为若干个功能上相对独立的程序段. 按照自身的逻辑使那些不会同时执行的程序段共享同一内存空间, 程序段先保存在磁盘上, 当前一部分执行结束后, 再把后续程序段调入内存, 覆盖掉前面的程序段.</p>
+<h4 id="交换技术"><a href="#交换技术" class="headerlink" title="交换技术"></a>交换技术</h4><p>交换技术是进程在<strong>内存</strong>与<strong>外存</strong>之间的动态调度, 是由操作系统控制的. </p>
+<p>系统可以将那些不在运行的程序或其一部分调出内存,暂时存放在外存上的一个后备存储区中, 以腾出内存空间给现在需要内存空间的进程, 后者可能要从外存换入内存. 以后再将换出的程序掉入内存继续执行.</p>
+<h2 id="虚拟存储管理"><a href="#虚拟存储管理" class="headerlink" title="虚拟存储管理"></a>虚拟存储管理</h2><p>旨在通过将计算机内存和外部存储（通常是硬盘）结合起来，提供更大的可用内存空间，以及更灵活的程序运行环境。</p>
+<p><strong>地址空间划分：</strong> 虚拟存储将整个地址空间划分为两个部分，即虚拟地址空间和物理地址空间。虚拟地址是程序员所见到的，而物理地址是实际的硬件地址。</p>
+<p><strong>分页系统：</strong> 虚拟存储通常通过分页系统来实现。内存和外部存储被划分成固定大小的页（通常是4KB或8KB），而程序的虚拟地址空间也被划分成相同大小的页面。当程序运行时，只有实际需要的页面才会被加载到内存中。</p>
+<p><strong>页面置换：</strong> 如果程序需要的页面不在内存中，系统会将一个当前在内存中的页面替换成外部存储中的所需页面。这个过程称为页面置换，目的是保证正在运行的程序始终有足够的页面在内存中。</p>
+<p><strong>虚拟内存管理：</strong> 操作系统负责管理虚拟内存，包括将页面从外部存储加载到内存中、进行页面置换、以及维护虚拟地址和物理地址之间的映射关系。</p>
+<h3 id="虚拟页式内存管理"><a href="#虚拟页式内存管理" class="headerlink" title="虚拟页式内存管理"></a>虚拟页式内存管理</h3><p>页表内容: 页号、驻留位、内存块号、外村地址、访问位、修改位.</p>
+<p><strong>驻留位</strong>(中断位), 表示该页是在内存还是外存.</p>
+<p><strong>访问位(R位)</strong>, 表示在内存期间是否被访问过.</p>
+<p><strong>修改位(M位)</strong> ,表示在内存中是否被修改过.</p>
+<p>R位和M位用来决定置换哪个页面, 具体由置换算法决定.</p>
+<h4 id="缺页中断"><a href="#缺页中断" class="headerlink" title="缺页中断"></a>缺页中断</h4><p>在地址映射过程中, 若在页表中发现所要访问的页面不在内存中, 则产生缺页中断.</p>
+<p>必须选择一个页面移出内存, 为将调入的页面让出空间.–&gt;如果要移走的页面已经被修改过, 那么就必须把它写回磁盘来更新磁盘上的副本; 如果没有被修改过, 就可以直接淘汰该页面.</p>
+<h4 id="页面置换算法"><a href="#页面置换算法" class="headerlink" title="页面置换算法"></a>页面置换算法</h4>
+
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div class="busuanzi center">
+    页阅读量:&nbsp;<span id="busuanzi_value_page_pv"></span>&nbsp;・&nbsp;
+    站访问量:&nbsp;<span id="busuanzi_value_site_pv"></span>&nbsp;・&nbsp;
+    站访客数:&nbsp;<span id="busuanzi_value_site_uv"></span>
+  </div>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"><div class="clearfix">
+</div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+        <svg class="i-caret-right" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+            <path d="M10 30 L26 16 10 2 Z"></path>
+        </svg>
+        </a>
+        © MUMU 2016-2021
+    </div>
+    <div class="secondrow">
+        <a target="_blank" rel="noopener" href="https://github.com/gaoryrt/hexo-theme-pln">
+        Theme Pln
+        </a>
+    </div>
+</div>
+<div class="clearfix">
+</div>
+</footer>
+  <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="/js/search.min.js"></script>
+<script type="text/javascript">
+
+// disqus scripts
+
+
+// dropdown scripts
+$(".dropdown").click(function(event) {
+  var current = $(this);
+  event.stopPropagation();
+  $(current).children(".dropdown-content")[($(current).children(".dropdown-content").hasClass("open"))?'removeClass':'addClass']("open")
+});
+$(document).click(function(){
+    $(".dropdown-content").removeClass("open");
+})
+
+var path = "/search.xml";
+searchFunc(path, 'local-search-input', 'local-search-result');
+
+</script>
+
+</body>
+</html>
