@@ -147,7 +147,7 @@ body {
   -moz-background-size: cover;
   background-size: cover;
   background-color: #c8e6de;
-  color: #171715;
+  color: #a5e9b1;
   -webkit-overflow-scrolling: touch;
   background-attachment: fixed;
 }
@@ -565,7 +565,6 @@ a {
   cursor: pointer;
   text-transform: uppercase;
   float: none;
-  height: 150px;
   margin-left: -10px;
   text-align: center;
   display: -webkit-box;
@@ -1061,7 +1060,7 @@ a {
   color: #1b5775;
 }
 .article-title {
-  color: #1b5775;
+  color: #89cc95;
   margin-left: 0px;
   font-weight: 300;
   line-height: 35px;
@@ -1113,8 +1112,10 @@ a {
 .article-entry li code {
   padding: 1px 3px;
   margin: 0 3px;
-  background: #9fe2e1;
-  border: 1px solid #ccc;
+  background: rgba(11,92,103,0.827);
+  border-radius: 2px;
+  -webkit-box-shadow: rgba(204,204,204,0.678) 1px 1px 0 1px;
+  box-shadow: rgba(204,204,204,0.678) 1px 1px 0 1px;
   font-family: Menlo, Monaco, monospace;
   word-wrap: break-word;
   font-size: 14px;
@@ -1136,7 +1137,7 @@ a {
   height: 6px;
   border: 1px solid #999;
   border-radius: 10px;
-  background: #aaa;
+  background: #dfff8d;
   display: inline-block;
   margin-right: 10px;
   float: left;
@@ -1158,12 +1159,12 @@ a {
 }
 .article-entry h1 {
   margin-top: 30px;
-  color: #2b6c8a;
+  color: #d1fe9a;
 }
 .article-entry h2 {
   margin-top: 20px;
-  font-weight: 300;
-  color: #2b6c8a;
+  font-weight: 500;
+  color: #d1fe9a;
   padding-bottom: 5px;
   border-bottom: 1px solid #ddd;
 }
@@ -1172,8 +1173,8 @@ a {
 .article-entry h5,
 .article-entry h6 {
   margin-top: 20px;
-  font-weight: 300;
-  color: #2b6c8a;
+  font-weight: 500;
+  color: #d1fe9a;
   padding-bottom: 5px;
   border-bottom: 1px solid #ddd;
 }
@@ -1468,7 +1469,7 @@ a {
 }
 .article-entry pre,
 .article-entry .highlight {
-  background: #4d4d4d;
+  background: #4a767e;
   margin: 10px 0;
   padding: 10px 10px;
   overflow: auto;
