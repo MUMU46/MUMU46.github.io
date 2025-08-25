@@ -1,0 +1,281 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>RAG学习笔记（三）-Retrieval（检索） | MUMU's blog</title><meta name="author" content="MUMU"><meta name="copyright" content="MUMU"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="检索在RAG流程中的核心地位 1A[用户提问] --&gt; B[向量化检索] --&gt; C[相关文档获取] --&gt; D[生成答案]  简单相似度搜索初始化向量数据库 12345678910from langchain.vectorstores import Chromafrom langchain.embeddings import OpenAIEmbeddingsembedding">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RAG学习笔记（三）-Retrieval（检索）">
+<meta property="og:url" content="http://mumu46.github.io/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/index.html">
+<meta property="og:site_name" content="MUMU&#39;s blog">
+<meta property="og:description" content="检索在RAG流程中的核心地位 1A[用户提问] --&gt; B[向量化检索] --&gt; C[相关文档获取] --&gt; D[生成答案]  简单相似度搜索初始化向量数据库 12345678910from langchain.vectorstores import Chromafrom langchain.embeddings import OpenAIEmbeddingsembedding">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg">
+<meta property="article:published_time" content="2025-05-22T08:00:54.000Z">
+<meta property="article:modified_time" content="2025-05-23T12:48:15.519Z">
+<meta property="article:author" content="MUMU">
+<meta property="article:tag" content="RAG">
+<meta property="article:tag" content="LLM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="http://mumu46.github.io/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'RAG学习笔记（三）-Retrieval（检索）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-05-23 20:48:15'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="MUMU's blog"><img class="site-icon" src="/img/avatar.png"/><span class="site-name">MUMU's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">RAG学习笔记（三）-Retrieval（检索）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-22T08:00:54.000Z" title="发表于 2025-05-22 16:00:54">2025-05-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-23T12:48:15.519Z" title="更新于 2025-05-23 20:48:15">2025-05-23</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="RAG学习笔记（三）-Retrieval（检索）"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>检索在RAG流程中的核心地位</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A[用户提问] --&gt; B[向量化检索] --&gt; C[相关文档获取] --&gt; D[生成答案]</span><br></pre></td></tr></table></figure>
+
+<h4 id="简单相似度搜索"><a href="#简单相似度搜索" class="headerlink" title="简单相似度搜索"></a>简单相似度搜索</h4><p>初始化向量数据库</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.vectorstores <span class="keyword">import</span> Chroma</span><br><span class="line"><span class="keyword">from</span> langchain.embeddings <span class="keyword">import</span> OpenAIEmbeddings</span><br><span class="line"></span><br><span class="line">embedding = OpenAIEmbeddings()</span><br><span class="line">vectordb = Chroma(</span><br><span class="line">    persist_directory=<span class="string">&quot;docs/chroma/&quot;</span>,</span><br><span class="line">    embedding_function=embedding</span><br><span class="line">)</span><br><span class="line"><span class="built_in">print</span>(vectordb._collection.count())  <span class="comment"># 打印存储的文档块数量</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>vectordb.similarity_search：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">question = <span class="string">&quot;Tell me about all-white mushrooms&quot;</span></span><br><span class="line"><span class="comment">#similarity_search</span></span><br><span class="line">docs = vectordb.similarity_search(question, k=<span class="number">2</span>)</span><br><span class="line"><span class="keyword">for</span> doc <span class="keyword">in</span> docs:</span><br><span class="line">    <span class="built_in">print</span>(doc.page_content[:<span class="number">100</span>] + <span class="string">&quot;...&quot;</span>)  <span class="comment"># 打印前100字符</span></span><br><span class="line"><span class="comment">#可能返回内容重复或过于相似的结果。</span></span><br></pre></td></tr></table></figure>
+
+<p>对于会返回重复结果的问题，可以做以下优化：</p>
+<h4 id="一、多样性优化：最大边际相关性（MMR）"><a href="#一、多样性优化：最大边际相关性（MMR）" class="headerlink" title="一、多样性优化：最大边际相关性（MMR）"></a>一、多样性优化：最大边际相关性（MMR）</h4><p>vectordb.max_marginal_relevance_search：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">question = <span class="string">&quot;what did they say about matlab?&quot;</span></span><br><span class="line"><span class="comment">#max_marginal_relevance_search</span></span><br><span class="line">docs_mmr = vectordb.max_marginal_relevance_search(</span><br><span class="line">    question, </span><br><span class="line">    k=<span class="number">3</span>,          <span class="comment"># 返回结果数</span></span><br><span class="line">    fetch_k=<span class="number">5</span>     <span class="comment"># 初始候选集大小</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><strong>MMR工作原理</strong>：</p>
+<ol>
+<li>先获取<code>fetch_k</code>个最相似文档</li>
+<li>根据<strong>相似度+多样性</strong>重新排序(选择相似内容文档的同时考虑多样性，以避免返回重复结果)</li>
+<li>返回前<code>k</code>个最均衡的结果</li>
+</ol>
+<p><strong>对比实验</strong>：</p>
+<table>
+<thead>
+<tr>
+<th align="left">方法</th>
+<th align="left">结果特点</th>
+<th align="left">适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>similarity_search</code></td>
+<td align="left">高度相似但可能重复</td>
+<td align="left">需要精准匹配时</td>
+</tr>
+<tr>
+<td align="left"><code>MMR</code></td>
+<td align="left">多样但相关</td>
+<td align="left">探索性问答/摘要生成</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="二、精准过滤：元数据操作"><a href="#二、精准过滤：元数据操作" class="headerlink" title="二、精准过滤：元数据操作"></a>二、精准过滤：元数据操作</h4><h4 id="1-硬编码过滤"><a href="#1-硬编码过滤" class="headerlink" title="1. 硬编码过滤"></a>1. 硬编码过滤</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#直接添加filter参数来过滤</span></span><br><span class="line">docs = vectordb.similarity_search(</span><br><span class="line">    <span class="string">&quot;regression in lecture 3&quot;</span>,</span><br><span class="line">    k=<span class="number">3</span>,</span><br><span class="line">    <span class="built_in">filter</span>=&#123;<span class="string">&quot;source&quot;</span>: <span class="string">&quot;docs/cs229_lectures/MachineLearning-Lecture03.pdf&quot;</span>&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-智能自查询检索（Self-Query）"><a href="#2-智能自查询检索（Self-Query）" class="headerlink" title="2. 智能自查询检索（Self-Query）"></a>2. 智能自查询检索（Self-Query）</h4><p>使用langchain.retrievers提供的检索器</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.retrievers.self_query <span class="keyword">import</span> SelfQueryRetriever</span><br><span class="line"><span class="keyword">from</span> langchain.chains.query_constructor.base <span class="keyword">import</span> AttributeInfo</span><br><span class="line"><span class="comment">#定义元数据字段信息：source、page </span></span><br><span class="line"><span class="comment">#这些定义会作为提示词的一部分，指导LLM如何从问题中提取过滤条件。</span></span><br><span class="line">metadata_field_info = [</span><br><span class="line">    AttributeInfo(name=<span class="string">&quot;source&quot;</span>, description=<span class="string">&quot;Lecture file path&quot;</span>, <span class="built_in">type</span>=<span class="string">&quot;string&quot;</span>),</span><br><span class="line">    AttributeInfo(name=<span class="string">&quot;page&quot;</span>, description=<span class="string">&quot;Page number&quot;</span>, <span class="built_in">type</span>=<span class="string">&quot;integer&quot;</span>)</span><br><span class="line">]</span><br><span class="line"><span class="comment">#初始化自查询检索器</span></span><br><span class="line">retriever = SelfQueryRetriever.from_llm(</span><br><span class="line">    llm=OpenAI(temperature=<span class="number">0</span>),          <span class="comment"># 使用gpt-3.5-turbo-instruct</span></span><br><span class="line">    vectorstore=vectordb,               <span class="comment"># 目标向量数据库</span></span><br><span class="line">    document_contents=<span class="string">&quot;Lecture notes&quot;</span>,  <span class="comment"># 文档内容描述（供LLM理解上下文）</span></span><br><span class="line">    metadata_field_info=metadata_field_info,  <span class="comment"># 上一步定义的元数据字段</span></span><br><span class="line">    verbose=<span class="literal">True</span>                        <span class="comment"># 打印详细解析过程（调试用）</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">question = <span class="string">&quot;what did they say about regression in the third lecture?&quot;</span></span><br><span class="line"><span class="comment">#LLM对问题进行解析，输出过滤条件：&#123;&#x27;query&#x27;: &#x27;regression&#x27;, &#x27;filter&#x27;: &#x27;eq(source,&quot;docs/cs229_lectures/MachineLearning-Lecture03.pdf&quot;)&#x27;&#125;</span></span><br><span class="line"></span><br><span class="line">docs = retriever.get_relevant_documents(question)  <span class="comment"># 自动提取过滤条件</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>自查询内部工作流程</strong>（封装在 retriever.get_relevant_documents里）：</p>
+<ol>
+<li><p>先使用LLM解析问题中的元数据条件（如”third lecture”→<code>source</code>过滤）</p>
+<ul>
+<li><p><strong>元数据过滤条件生成</strong></p>
+<ul>
+<li><p><strong>输入问题</strong>：<br><code>&quot;Find examples about neural networks from the first 5 pages of Lecture02&quot;</code></p>
+</li>
+<li><p><strong>LLM输出</strong>：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;query&quot;</span>: <span class="string">&quot;neural networks&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;filter&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;source&quot;</span>: <span class="string">&quot;MachineLearning-Lecture02.pdf&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;page&quot;</span>: &#123;<span class="attr">&quot;$lte&quot;</span>: <span class="number">5</span>&#125;<span class="comment">//$lte ：操作符</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>组合语义搜索与元数据过滤</p>
+<p>再结合上一步LLM输出的内容使用vectordb.similarity_search或mmr等其他搜索方法进行语义搜索：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vectordb.similarity_search(</span><br><span class="line">    query=<span class="string">&quot;regression&quot;</span>,</span><br><span class="line">    <span class="built_in">filter</span>=&#123;<span class="string">&quot;source&quot;</span>: <span class="string">&quot;docs/cs229_lectures/MachineLearning-Lecture03.pdf&quot;</span>&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h5 id="自查询检索器核心机制图解"><a href="#自查询检索器核心机制图解" class="headerlink" title="自查询检索器核心机制图解"></a>自查询检索器核心机制图解</h5><img src="https://s2.loli.net/2025/05/23/xJn5p9Alt3qGS78.png" >
+
+<p>通过自查询检索器，开发者可以<strong>用自然语言表达复杂查询意图</strong>，而无需手动构建过滤条件，极大提升了RAG系统的易用性和智能化程度。</p>
+<h4 id="三、内容压缩：聚焦关键信息"><a href="#三、内容压缩：聚焦关键信息" class="headerlink" title="三、内容压缩：聚焦关键信息"></a>三、内容压缩：聚焦关键信息</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.retrievers <span class="keyword">import</span> ContextualCompressionRetriever</span><br><span class="line"><span class="keyword">from</span> langchain.retrievers.document_compressors <span class="keyword">import</span> LLMChainExtractor</span><br><span class="line"></span><br><span class="line">compressor = LLMChainExtractor.from_llm(OpenAI(temperature=<span class="number">0</span>))</span><br><span class="line">compression_retriever = ContextualCompressionRetriever(</span><br><span class="line">    base_compressor=compressor,</span><br><span class="line">    base_retriever=vectordb.as_retriever()</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">compressed_docs = compression_retriever.get_relevant_documents(question)</span><br></pre></td></tr></table></figure>
+
+<p><strong>压缩效果对比</strong>：</p>
+<ul>
+<li>原始文档：<br><code>&quot;Matlab is...&lt;500字&gt;...（后续无关内容）&quot;</code></li>
+<li>压缩后：<br><code>&quot;Matlab在课程中被用于矩阵运算演示...&lt;150字精华&gt;&quot;</code></li>
+</ul>
+<hr>
+<h4 id="四、混合检索技术"><a href="#四、混合检索技术" class="headerlink" title="四、混合检索技术"></a>四、混合检索技术</h4><h5 id="1-MMR-压缩组合"><a href="#1-MMR-压缩组合" class="headerlink" title="1. MMR+压缩组合"></a>1. MMR+压缩组合</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">compression_retriever = ContextualCompressionRetriever(</span><br><span class="line">    base_compressor=compressor,</span><br><span class="line">    base_retriever=vectordb.as_retriever(search_type=<span class="string">&quot;mmr&quot;</span>)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-传统检索器对比"><a href="#2-传统检索器对比" class="headerlink" title="2. 传统检索器对比"></a>2. 传统检索器对比</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.retrievers <span class="keyword">import</span> TFIDFRetriever, SVMRetriever</span><br><span class="line"></span><br><span class="line"><span class="comment"># TF-IDF检索（基于词频）</span></span><br><span class="line">tfidf_retriever = TFIDFRetriever.from_texts(splits)</span><br><span class="line">docs_tfidf = tfidf_retriever.get_relevant_documents(<span class="string">&quot;matlab&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># SVM检索（基于分类超平面）</span></span><br><span class="line">svm_retriever = SVMRetriever.from_texts(splits, embedding)</span><br><span class="line">docs_svm = svm_retriever.get_relevant_documents(<span class="string">&quot;class topics&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>检索器性能对比表</strong>：</p>
+<table>
+<thead>
+<tr>
+<th align="left">类型</th>
+<th align="left">优点</th>
+<th align="left">缺点</th>
+<th align="left">适合场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">向量检索</td>
+<td align="left">语义理解能力强</td>
+<td align="left">计算资源消耗大</td>
+<td align="left">通用问答</td>
+</tr>
+<tr>
+<td align="left">TF-IDF</td>
+<td align="left">速度快，无需预训练</td>
+<td align="left">无法处理语义变体</td>
+<td align="left">关键词精确匹配</td>
+</tr>
+<tr>
+<td align="left">SVM</td>
+<td align="left">可处理非线性关系</td>
+<td align="left">需要大量训练数据</td>
+<td align="left">专业领域分类</td>
+</tr>
+</tbody></table>
+<img src="https://s2.loli.net/2025/05/23/R9jrGl2YstJcKqp.png" >
+
+<h4 id="五、关键问题解决方案"><a href="#五、关键问题解决方案" class="headerlink" title="五、关键问题解决方案"></a>五、关键问题解决方案</h4><ol>
+<li><strong>重复内容</strong><ul>
+<li>方案：MMR + 文档哈希去重</li>
+</ul>
+</li>
+<li><strong>跨文档干扰</strong><ul>
+<li>方案：自查询元数据过滤</li>
+</ul>
+</li>
+<li><strong>信息冗余</strong><ul>
+<li>方案：LLM实时内容压缩</li>
+</ul>
+</li>
+</ol>
+<p>通过本课技术组合，可使RAG系统的检索准确率提升40%以上（据LangChain官方基准测试）。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://MUMU46.github.io">MUMU</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://mumu46.github.io/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/">http://mumu46.github.io/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://MUMU46.github.io" target="_blank">MUMU's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/RAG/">RAG</a><a class="post-meta__tags" href="/tags/LLM/">LLM</a></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/" title="RAG学习笔记（四）-问答系统"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">RAG学习笔记（四）-问答系统</div></div></a></div><div class="next-post pull-right"><a href="/2025/05/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Embeddings/" title="RAG学习笔记（二）--Embeddings"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">RAG学习笔记（二）--Embeddings</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2025/04/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/" title="RAG学习笔记（一）"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-20</div><div class="title">RAG学习笔记（一）</div></div></a></div><div><a href="/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/" title="RAG学习笔记（四）-问答系统"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-23</div><div class="title">RAG学习笔记（四）-问答系统</div></div></a></div><div><a href="/2025/05/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Embeddings/" title="RAG学习笔记（二）--Embeddings"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-20</div><div class="title">RAG学习笔记（二）--Embeddings</div></div></a></div><div><a href="/2025/08/24/Rankify%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" title="Rankify论文学习"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-24</div><div class="title">Rankify论文学习</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">MUMU</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/MUMU46/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/MUMU46" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:mumu_g@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my blog!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E7%9B%B8%E4%BC%BC%E5%BA%A6%E6%90%9C%E7%B4%A2"><span class="toc-number">1.</span> <span class="toc-text">简单相似度搜索</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%A4%9A%E6%A0%B7%E6%80%A7%E4%BC%98%E5%8C%96%EF%BC%9A%E6%9C%80%E5%A4%A7%E8%BE%B9%E9%99%85%E7%9B%B8%E5%85%B3%E6%80%A7%EF%BC%88MMR%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">一、多样性优化：最大边际相关性（MMR）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%B2%BE%E5%87%86%E8%BF%87%E6%BB%A4%EF%BC%9A%E5%85%83%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C"><span class="toc-number">3.</span> <span class="toc-text">二、精准过滤：元数据操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%A1%AC%E7%BC%96%E7%A0%81%E8%BF%87%E6%BB%A4"><span class="toc-number">4.</span> <span class="toc-text">1. 硬编码过滤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%99%BA%E8%83%BD%E8%87%AA%E6%9F%A5%E8%AF%A2%E6%A3%80%E7%B4%A2%EF%BC%88Self-Query%EF%BC%89"><span class="toc-number">5.</span> <span class="toc-text">2. 智能自查询检索（Self-Query）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%87%AA%E6%9F%A5%E8%AF%A2%E6%A3%80%E7%B4%A2%E5%99%A8%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6%E5%9B%BE%E8%A7%A3"><span class="toc-number">5.1.</span> <span class="toc-text">自查询检索器核心机制图解</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%86%85%E5%AE%B9%E5%8E%8B%E7%BC%A9%EF%BC%9A%E8%81%9A%E7%84%A6%E5%85%B3%E9%94%AE%E4%BF%A1%E6%81%AF"><span class="toc-number">6.</span> <span class="toc-text">三、内容压缩：聚焦关键信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%B7%B7%E5%90%88%E6%A3%80%E7%B4%A2%E6%8A%80%E6%9C%AF"><span class="toc-number">7.</span> <span class="toc-text">四、混合检索技术</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-MMR-%E5%8E%8B%E7%BC%A9%E7%BB%84%E5%90%88"><span class="toc-number">7.1.</span> <span class="toc-text">1. MMR+压缩组合</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-%E4%BC%A0%E7%BB%9F%E6%A3%80%E7%B4%A2%E5%99%A8%E5%AF%B9%E6%AF%94"><span class="toc-number">7.2.</span> <span class="toc-text">2. 传统检索器对比</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%85%B3%E9%94%AE%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">8.</span> <span class="toc-text">五、关键问题解决方案</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/08/24/Rankify%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" title="Rankify论文学习"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Rankify论文学习"/></a><div class="content"><a class="title" href="/2025/08/24/Rankify%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" title="Rankify论文学习">Rankify论文学习</a><time datetime="2025-08-24T09:32:04.000Z" title="发表于 2025-08-24 17:32:04">2025-08-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/06/16/%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F/" title="无题"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2025/06/16/%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F/" title="无题">无题</a><time datetime="2025-06-16T13:42:39.137Z" title="发表于 2025-06-16 21:42:39">2025-06-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/" title="RAG学习笔记（四）-问答系统"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG学习笔记（四）-问答系统"/></a><div class="content"><a class="title" href="/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/" title="RAG学习笔记（四）-问答系统">RAG学习笔记（四）-问答系统</a><time datetime="2025-05-23T12:59:22.000Z" title="发表于 2025-05-23 20:59:22">2025-05-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/" title="RAG学习笔记（三）-Retrieval（检索）"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG学习笔记（三）-Retrieval（检索）"/></a><div class="content"><a class="title" href="/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/" title="RAG学习笔记（三）-Retrieval（检索）">RAG学习笔记（三）-Retrieval（检索）</a><time datetime="2025-05-22T08:00:54.000Z" title="发表于 2025-05-22 16:00:54">2025-05-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Embeddings/" title="RAG学习笔记（二）--Embeddings"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG学习笔记（二）--Embeddings"/></a><div class="content"><a class="title" href="/2025/05/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Embeddings/" title="RAG学习笔记（二）--Embeddings">RAG学习笔记（二）--Embeddings</a><time datetime="2025-05-20T08:03:30.000Z" title="发表于 2025-05-20 16:03:30">2025-05-20</time></div></div></div></div></div></div></main><footer id="footer" style="background: url(/img/about.jpg)"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2025 By MUMU</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

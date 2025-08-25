@@ -1,0 +1,261 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Confusion_Detection论文学习 | MUMU's blog</title><meta name="author" content="MUMU"><meta name="copyright" content="MUMU"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="主要内容论文提出了一种基于时空深度神经网络的视觉困惑检测方法，结合ResNet-18提取单帧图像的空间特征和LSTM网络捕捉时间序列信息。该方法在公开数据集BAUM-1和自建的非受控环境数据集CUPIC-Confusion上验证了有效性，相比基准模型（基于动作单元特征+LSTM），在准确率和实时性上表现更优，适用于教育、在线会议等需要自动检测用户困惑的场景。  使用的数据集 BAUM-1数据库 包">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Confusion_Detection论文学习">
+<meta property="og:url" content="http://mumu46.github.io/2025/03/02/202532-Confusion_Detection%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="MUMU&#39;s blog">
+<meta property="og:description" content="主要内容论文提出了一种基于时空深度神经网络的视觉困惑检测方法，结合ResNet-18提取单帧图像的空间特征和LSTM网络捕捉时间序列信息。该方法在公开数据集BAUM-1和自建的非受控环境数据集CUPIC-Confusion上验证了有效性，相比基准模型（基于动作单元特征+LSTM），在准确率和实时性上表现更优，适用于教育、在线会议等需要自动检测用户困惑的场景。  使用的数据集 BAUM-1数据库 包">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg">
+<meta property="article:published_time" content="2025-03-02T13:32:00.000Z">
+<meta property="article:modified_time" content="2025-05-20T08:11:26.663Z">
+<meta property="article:author" content="MUMU">
+<meta property="article:tag" content="Confusion_Detection">
+<meta property="article:tag" content="Deep_Neural_Networks">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="http://mumu46.github.io/2025/03/02/202532-Confusion_Detection%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Confusion_Detection论文学习',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-05-20 16:11:26'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="MUMU's blog"><img class="site-icon" src="/img/avatar.png"/><span class="site-name">MUMU's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Confusion_Detection论文学习</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-02T13:32:00.000Z" title="发表于 2025-03-02 21:32:00">2025-03-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-20T08:11:26.663Z" title="更新于 2025-05-20 16:11:26">2025-05-20</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Confusion_Detection论文学习"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h3><p>论文提出了一种基于时空深度神经网络的视觉困惑检测方法，结合ResNet-18提取单帧图像的空间特征和LSTM网络捕捉时间序列信息。该方法在公开数据集BAUM-1和自建的非受控环境数据集CUPIC-Confusion上验证了有效性，相比基准模型（基于动作单元特征+LSTM），在准确率和实时性上表现更优，适用于教育、在线会议等需要自动检测用户困惑的场景。</p>
+<hr>
+<h3 id="使用的数据集"><a href="#使用的数据集" class="headerlink" title="使用的数据集"></a>使用的数据集</h3><ol>
+<li><strong>BAUM-1数据库</strong><ul>
+<li>包含1,457段视频（30 fps），标注了13种情感/精神状态（包括“思考”和“不确定”，合并为“困惑”）。</li>
+<li>分为两部分：<ul>
+<li><strong>BAUM-1s（自发表情）</strong>：用于训练和验证。</li>
+<li><strong>BAUM-1a（表演表情）</strong>：用于对比测试。</li>
+</ul>
+</li>
+<li>数据预处理：视频分帧、人脸检测与裁剪、标签二分类（困惑/非困惑）、平衡数据集。</li>
+</ul>
+</li>
+<li><strong>CUPIC-Confusion数据集</strong><ul>
+<li>自建数据集，包含50段非受控环境下录制的视频（15名参与者观看困惑内容时拍摄）。</li>
+<li>特点：光照、背景、设备差异大，标注基于参与者自报告和人工验证。</li>
+<li>预处理：标注困惑时间段并转换为帧级标签，提取30帧/2秒的片段。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="数据处理方法"><a href="#数据处理方法" class="headerlink" title="数据处理方法"></a>数据处理方法</h3><ol>
+<li><strong>视频分帧与裁剪</strong><ul>
+<li>将视频分割为30帧/2秒的片段（15 fps），确保连续无缺失帧。</li>
+<li>使用改进的物体检测算法裁剪人脸区域。</li>
+</ul>
+</li>
+<li><strong>标签处理</strong><ul>
+<li>将BAUM-1中的“思考”和“不确定”合并为“困惑”类，其余归为“非困惑”。</li>
+<li>对CUPIC-Confusion数据标注困惑时间段，并转换为帧级标签。</li>
+</ul>
+</li>
+<li><strong>数据平衡与增强</strong><ul>
+<li>随机采样平衡困惑/非困惑样本。</li>
+<li>数据增强：随机旋转（±15°）、翻转、对比度/亮度调整、椒盐噪声、高斯模糊等（80%概率应用）。</li>
+</ul>
+</li>
+<li><strong>归一化</strong><ul>
+<li>图像缩放至224×224像素，RGB通道归一化（均值[0.485, 0.456, 0.406]，标准差[0.299, 0.224, 0.225]）。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="具体方法"><a href="#具体方法" class="headerlink" title="具体方法"></a>具体方法</h3><ol>
+<li><strong>模型架构（STN）</strong><ul>
+<li><strong>空间特征提取</strong>：ResNet-18（预训练于ImageNet）提取单帧图像的512维特征。</li>
+<li><strong>时间序列建模</strong>：30单元LSTM网络处理30帧序列，结合Dropout（50%）和全连接层（64节点）输出分类结果。</li>
+<li>输出层：二分类（Sigmoid激活函数）。</li>
+</ul>
+</li>
+<li><strong>训练策略</strong><ul>
+<li><strong>迁移学习</strong>：ResNet-18初始权重来自ImageNet预训练模型，最后一层替换为单输出节点。</li>
+<li><strong>损失函数与优化</strong>：二元交叉熵损失，Adam优化器，动态学习率（验证损失停滞时下降90%）。</li>
+<li><strong>早停机制</strong>：连续10个epoch验证损失无改善时终止训练。</li>
+</ul>
+</li>
+<li><strong>基准模型</strong><ul>
+<li>基于OpenFace 2.0提取17个动作单元（AU）特征，输入LSTM网络（与论文模型结构相似）。</li>
+<li>因AU提取耗时（0.8秒/帧），整体处理速度低于STN模型。</li>
+</ul>
+</li>
+<li><strong>性能指标</strong><ul>
+<li>准确率、精确率、召回率、F1值。</li>
+<li>推理速度：STN模型处理速度6.5 fps，基准模型1.7 fps。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h3><ul>
+<li><strong>BAUM-1s</strong>：STN准确率74%（基准68%），F1值73%。</li>
+<li><strong>BAUM-1a</strong>：STN准确率73%（基准67%），但精确率和召回率较低（表演数据与真实表情差异大）。</li>
+<li><strong>CUPIC-Confusion</strong>：STN准确率66%（基准47%），验证了非受控环境下的鲁棒性。</li>
+</ul>
+<h3 id="基于OpenFace-2-0提取的17个动作单元（AU）特征与表情识别密切相关，而非广义的“行为识别”。以下是具体分析："><a href="#基于OpenFace-2-0提取的17个动作单元（AU）特征与表情识别密切相关，而非广义的“行为识别”。以下是具体分析：" class="headerlink" title="基于OpenFace 2.0提取的17个动作单元（AU）特征与表情识别密切相关，而非广义的“行为识别”。以下是具体分析："></a>基于OpenFace 2.0提取的17个动作单元（AU）特征与表情识别密切相关，而非广义的“行为识别”。以下是具体分析：</h3><hr>
+<h4 id="1-动作单元（AU）的本质与表情识别的关系"><a href="#1-动作单元（AU）的本质与表情识别的关系" class="headerlink" title="1. 动作单元（AU）的本质与表情识别的关系"></a><strong>1. 动作单元（AU）的本质与表情识别的关系</strong></h4><ul>
+<li><strong>动作单元（AU）</strong> 源自FACS（Facial Action Coding System），是面部肌肉微小运动的编码单位（如AU12对应“嘴角上扬”，AU4对应“皱眉”）。</li>
+<li><strong>核心作用</strong>：通过AU的组合可以精确描述复杂的表情（如困惑、愤怒、惊讶）。例如，困惑可能涉及AU4（皱眉）、AU7（眼睑收紧）等。</li>
+<li><strong>与表情识别的直接关联</strong>：AU提取是表情识别的基础技术，能够量化面部表情的细微变化，尤其适用于区分基本情绪之外的复杂状态（如困惑、思考）。</li>
+</ul>
+<hr>
+<h4 id="2-为何不属于广义的“行为识别”？"><a href="#2-为何不属于广义的“行为识别”？" class="headerlink" title="2. 为何不属于广义的“行为识别”？"></a><strong>2. 为何不属于广义的“行为识别”？</strong></h4><ul>
+<li><strong>行为识别的范畴</strong>：通常指对人体动作（如手势、步态、全身动作）或交互行为的分析，侧重于时间序列中的宏观动作模式。</li>
+<li><strong>AU的局限性</strong>：AU仅关注面部局部肌肉运动，不涉及身体动作或环境交互。其目标是解析表情的构成，而非整体行为模式。</li>
+<li><strong>例外情况</strong>：若将AU与身体动作、语音等结合，可能扩展至多模态行为分析，但本论文仅使用AU进行表情分类，仍属表情识别范畴。</li>
+</ul>
+<hr>
+<h4 id="3-OpenFace-2-0在本文中的作用"><a href="#3-OpenFace-2-0在本文中的作用" class="headerlink" title="3. OpenFace 2.0在本文中的作用"></a><strong>3. OpenFace 2.0在本文中的作用</strong></h4><ul>
+<li><strong>工具功能</strong>：OpenFace 2.0专门用于面部行为分析，支持AU检测、头部姿态估计等，核心是为表情/情绪识别提供量化特征。</li>
+<li><strong>论文中的应用</strong>：基线模型通过提取17个AU的激活强度（如皱眉程度、嘴角变化），输入LSTM捕捉时序模式，最终目标是判断是否困惑。这属于<strong>细粒度表情识别</strong>，而非行为识别。</li>
+</ul>
+<hr>
+<h4 id="4-AU分析与表情识别的优势"><a href="#4-AU分析与表情识别的优势" class="headerlink" title="4. AU分析与表情识别的优势"></a><strong>4. AU分析与表情识别的优势</strong></h4><ul>
+<li><strong>高解释性</strong>：AU提供可解释的物理特征（如“皱眉强度”），便于分析表情的生理基础。</li>
+<li><strong>处理复杂情绪</strong>：传统六种基本情绪（如快乐、悲伤）的分类常依赖整体特征，而AU更适合捕捉混合或细微状态（如困惑、不确定）。</li>
+<li><strong>数据效率</strong>：相比端到端的图像分类（如直接用CNN），AU特征可减少模型对数据量的依赖，尤其在标注稀缺的场景中。</li>
+</ul>
+<hr>
+<h4 id="5-与行为识别的潜在交叉点"><a href="#5-与行为识别的潜在交叉点" class="headerlink" title="5. 与行为识别的潜在交叉点"></a><strong>5. 与行为识别的潜在交叉点</strong></h4><p>虽然AU本身属于表情识别，但在多模态系统中可与行为识别结合：</p>
+<ul>
+<li><strong>例1</strong>：教育场景中，同时分析学生的面部困惑（AU）和身体动作（如抓头、频繁翻页），可更全面判断学习状态。</li>
+<li><strong>例2</strong>：人机交互中，结合AU（表情）与手势（行为）提升交互自然性。<br>但<strong>本文仅聚焦于AU与表情识别</strong>，未涉及其他行为特征。</li>
+</ul>
+<hr>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p><strong>OpenFace 2.0提取的AU特征属于表情识别技术</strong>，其通过量化面部肌肉运动解析情绪状态（如困惑），与行为识别（分析全身动作或交互模式）有本质区别。在本文中，AU作为时空特征输入LSTM，直接服务于复杂表情（困惑）的分类，是表情识别领域的重要方法。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://MUMU46.github.io">MUMU</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://mumu46.github.io/2025/03/02/202532-Confusion_Detection%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/">http://mumu46.github.io/2025/03/02/202532-Confusion_Detection%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://MUMU46.github.io" target="_blank">MUMU's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Confusion-Detection/">Confusion_Detection</a><a class="post-meta__tags" href="/tags/Deep-Neural-Networks/">Deep_Neural_Networks</a></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/04/07/%E8%9E%8D%E5%90%88%E6%95%99%E8%82%B2%E7%8E%AF%E5%A2%83/" title=""><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info"></div></div></a></div><div class="next-post pull-right"><a href="/2024/04/28/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86-%E8%87%AA%E4%B8%8A%E8%80%8C%E4%B8%8B%E8%AF%AD%E6%B3%95%E5%88%86%E6%9E%90/" title="编译原理-自上而下语法分析"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">编译原理-自上而下语法分析</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">MUMU</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/MUMU46/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/MUMU46" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:mumu_g@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my blog!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E5%86%85%E5%AE%B9"><span class="toc-number">1.</span> <span class="toc-text">主要内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">使用的数据集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E6%96%B9%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">数据处理方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E6%96%B9%E6%B3%95"><span class="toc-number">4.</span> <span class="toc-text">具体方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="toc-number">5.</span> <span class="toc-text">实验结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8EOpenFace-2-0%E6%8F%90%E5%8F%96%E7%9A%8417%E4%B8%AA%E5%8A%A8%E4%BD%9C%E5%8D%95%E5%85%83%EF%BC%88AU%EF%BC%89%E7%89%B9%E5%BE%81%E4%B8%8E%E8%A1%A8%E6%83%85%E8%AF%86%E5%88%AB%E5%AF%86%E5%88%87%E7%9B%B8%E5%85%B3%EF%BC%8C%E8%80%8C%E9%9D%9E%E5%B9%BF%E4%B9%89%E7%9A%84%E2%80%9C%E8%A1%8C%E4%B8%BA%E8%AF%86%E5%88%AB%E2%80%9D%E3%80%82%E4%BB%A5%E4%B8%8B%E6%98%AF%E5%85%B7%E4%BD%93%E5%88%86%E6%9E%90%EF%BC%9A"><span class="toc-number">6.</span> <span class="toc-text">基于OpenFace 2.0提取的17个动作单元（AU）特征与表情识别密切相关，而非广义的“行为识别”。以下是具体分析：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%8A%A8%E4%BD%9C%E5%8D%95%E5%85%83%EF%BC%88AU%EF%BC%89%E7%9A%84%E6%9C%AC%E8%B4%A8%E4%B8%8E%E8%A1%A8%E6%83%85%E8%AF%86%E5%88%AB%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">6.1.</span> <span class="toc-text">1. 动作单元（AU）的本质与表情识别的关系</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E4%B8%BA%E4%BD%95%E4%B8%8D%E5%B1%9E%E4%BA%8E%E5%B9%BF%E4%B9%89%E7%9A%84%E2%80%9C%E8%A1%8C%E4%B8%BA%E8%AF%86%E5%88%AB%E2%80%9D%EF%BC%9F"><span class="toc-number">6.2.</span> <span class="toc-text">2. 为何不属于广义的“行为识别”？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-OpenFace-2-0%E5%9C%A8%E6%9C%AC%E6%96%87%E4%B8%AD%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">6.3.</span> <span class="toc-text">3. OpenFace 2.0在本文中的作用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-AU%E5%88%86%E6%9E%90%E4%B8%8E%E8%A1%A8%E6%83%85%E8%AF%86%E5%88%AB%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">6.4.</span> <span class="toc-text">4. AU分析与表情识别的优势</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E4%B8%8E%E8%A1%8C%E4%B8%BA%E8%AF%86%E5%88%AB%E7%9A%84%E6%BD%9C%E5%9C%A8%E4%BA%A4%E5%8F%89%E7%82%B9"><span class="toc-number">6.5.</span> <span class="toc-text">5. 与行为识别的潜在交叉点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA"><span class="toc-number">7.</span> <span class="toc-text">结论</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/08/24/Rankify%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" title="Rankify论文学习"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Rankify论文学习"/></a><div class="content"><a class="title" href="/2025/08/24/Rankify%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" title="Rankify论文学习">Rankify论文学习</a><time datetime="2025-08-24T09:32:04.000Z" title="发表于 2025-08-24 17:32:04">2025-08-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/06/16/%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F/" title="无题"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2025/06/16/%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F/" title="无题">无题</a><time datetime="2025-06-16T13:42:39.137Z" title="发表于 2025-06-16 21:42:39">2025-06-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/" title="RAG学习笔记（四）-问答系统"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG学习笔记（四）-问答系统"/></a><div class="content"><a class="title" href="/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/" title="RAG学习笔记（四）-问答系统">RAG学习笔记（四）-问答系统</a><time datetime="2025-05-23T12:59:22.000Z" title="发表于 2025-05-23 20:59:22">2025-05-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/" title="RAG学习笔记（三）-Retrieval（检索）"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG学习笔记（三）-Retrieval（检索）"/></a><div class="content"><a class="title" href="/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/" title="RAG学习笔记（三）-Retrieval（检索）">RAG学习笔记（三）-Retrieval（检索）</a><time datetime="2025-05-22T08:00:54.000Z" title="发表于 2025-05-22 16:00:54">2025-05-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Embeddings/" title="RAG学习笔记（二）--Embeddings"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG学习笔记（二）--Embeddings"/></a><div class="content"><a class="title" href="/2025/05/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Embeddings/" title="RAG学习笔记（二）--Embeddings">RAG学习笔记（二）--Embeddings</a><time datetime="2025-05-20T08:03:30.000Z" title="发表于 2025-05-20 16:03:30">2025-05-20</time></div></div></div></div></div></div></main><footer id="footer" style="background: url(/img/about.jpg)"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2025 By MUMU</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

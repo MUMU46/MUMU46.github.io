@@ -1,0 +1,247 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>RAG学习笔记（四）-问答系统 | MUMU's blog</title><meta name="author" content="MUMU"><meta name="copyright" content="MUMU"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="RAG工作流程回顾  一、基础问答链实现1. 初始化组件123456789101112131415from langchain.vectorstores import Chromafrom langchain.chat_models import ChatOpenAIfrom langchain.chains import RetrievalQA# 加载向量数据库vectordb &#x3D; Chroma">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RAG学习笔记（四）-问答系统">
+<meta property="og:url" content="http://mumu46.github.io/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="MUMU&#39;s blog">
+<meta property="og:description" content="RAG工作流程回顾  一、基础问答链实现1. 初始化组件123456789101112131415from langchain.vectorstores import Chromafrom langchain.chat_models import ChatOpenAIfrom langchain.chains import RetrievalQA# 加载向量数据库vectordb &#x3D; Chroma">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg">
+<meta property="article:published_time" content="2025-05-23T12:59:22.000Z">
+<meta property="article:modified_time" content="2025-05-27T09:43:03.122Z">
+<meta property="article:author" content="MUMU">
+<meta property="article:tag" content="RAG">
+<meta property="article:tag" content="LLM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="http://mumu46.github.io/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'RAG学习笔记（四）-问答系统',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-05-27 17:43:03'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="MUMU's blog"><img class="site-icon" src="/img/avatar.png"/><span class="site-name">MUMU's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">RAG学习笔记（四）-问答系统</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-23T12:59:22.000Z" title="发表于 2025-05-23 20:59:22">2025-05-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-27T09:43:03.122Z" title="更新于 2025-05-27 17:43:03">2025-05-27</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="RAG学习笔记（四）-问答系统"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="RAG工作流程回顾"><a href="#RAG工作流程回顾" class="headerlink" title="RAG工作流程回顾"></a>RAG工作流程回顾</h3><img src="https://s2.loli.net/2025/05/20/W4righC5bq8Eejf.jpg" >
+
+<h3 id="一、基础问答链实现"><a href="#一、基础问答链实现" class="headerlink" title="一、基础问答链实现"></a>一、基础问答链实现</h3><h4 id="1-初始化组件"><a href="#1-初始化组件" class="headerlink" title="1. 初始化组件"></a>1. 初始化组件</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.vectorstores <span class="keyword">import</span> Chroma</span><br><span class="line"><span class="keyword">from</span> langchain.chat_models <span class="keyword">import</span> ChatOpenAI</span><br><span class="line"><span class="keyword">from</span> langchain.chains <span class="keyword">import</span> RetrievalQA</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载向量数据库</span></span><br><span class="line">vectordb = Chroma(persist_directory=<span class="string">&quot;docs/chroma/&quot;</span>, embedding_function=OpenAIEmbeddings())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化LLM（控制确定性）</span></span><br><span class="line">llm = ChatOpenAI(model_name=<span class="string">&quot;gpt-3.5-turbo&quot;</span>, temperature=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建基础问答链</span></span><br><span class="line">qa_chain = RetrievalQA.from_chain_type(</span><br><span class="line">    llm,</span><br><span class="line">    retriever=vectordb.as_retriever()</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-执行问答"><a href="#2-执行问答" class="headerlink" title="2. 执行问答"></a>2. 执行问答</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">question = <span class="string">&quot;What are major topics for this class?&quot;</span></span><br><span class="line">result = qa_chain(&#123;<span class="string">&quot;query&quot;</span>: question&#125;)</span><br><span class="line"><span class="built_in">print</span>(result[<span class="string">&quot;result&quot;</span>])</span><br></pre></td></tr></table></figure>
+
+<p><strong>输出示例</strong>：<br><em>“The main topics include machine learning algorithms, probability theory, and linear algebra.”</em></p>
+<h3 id="二、高级提示词工程"><a href="#二、高级提示词工程" class="headerlink" title="二、高级提示词工程"></a>二、高级提示词工程</h3><h4 id="1-定制提示模板"><a href="#1-定制提示模板" class="headerlink" title="1. 定制提示模板"></a>1. 定制提示模板</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.prompts <span class="keyword">import</span> PromptTemplate</span><br><span class="line"></span><br><span class="line"><span class="comment"># Build prompt</span></span><br><span class="line">template = <span class="string">&quot;&quot;&quot;Use the following pieces of context to answer the question at the end. If you don&#x27;t know the answer, just say that you don&#x27;t know, don&#x27;t try to make up an answer. Use three sentences maximum. Keep the answer as concise as possible. Always say &quot;thanks for asking!&quot; at the end of the answer. </span></span><br><span class="line"><span class="string">&#123;context&#125;</span></span><br><span class="line"><span class="string">Question: &#123;question&#125;</span></span><br><span class="line"><span class="string">Helpful Answer:&quot;&quot;&quot;</span></span><br><span class="line">QA_CHAIN_PROMPT = PromptTemplate.from_template(template)</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-应用定制提示"><a href="#2-应用定制提示" class="headerlink" title="2. 应用定制提示"></a>2. 应用定制提示</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">qa_chain = RetrievalQA.from_chain_type(</span><br><span class="line">    llm,</span><br><span class="line">    retriever=vectordb.as_retriever(),</span><br><span class="line">    chain_type_kwargs=&#123;<span class="string">&quot;prompt&quot;</span>: QA_CHAIN_PROMPT&#125;,<span class="comment"># 定制提示词</span></span><br><span class="line">    return_source_documents=<span class="literal">True</span>  <span class="comment"># 返回参考文档</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">result = qa_chain(&#123;<span class="string">&quot;query&quot;</span>: <span class="string">&quot;Is probability a class topic?&quot;</span>&#125;)</span><br><span class="line"><span class="built_in">print</span>(result[<span class="string">&quot;result&quot;</span>])  <span class="comment"># 答案</span></span><br><span class="line"><span class="built_in">print</span>(result[<span class="string">&quot;source_documents&quot;</span>][<span class="number">0</span>])  <span class="comment"># 参考文档片段</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>优化效果</strong>：<br>答案更简洁规范，且可追溯知识来源。</p>
+<hr>
+<h3 id="三、问答链类型对比"><a href="#三、问答链类型对比" class="headerlink" title="三、问答链类型对比"></a>三、问答链类型对比</h3><h4 id="1-Map-Reduce模式"><a href="#1-Map-Reduce模式" class="headerlink" title="1. Map-Reduce模式"></a>1. Map-Reduce模式</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">qa_chain_mr = RetrievalQA.from_chain_type(</span><br><span class="line">    llm,</span><br><span class="line">    retriever=vectordb.as_retriever(),</span><br><span class="line">    chain_type=<span class="string">&quot;map_reduce&quot;</span>  <span class="comment"># 分块处理再聚合</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>优点</strong>：处理长文档时内存效率高</li>
+<li><strong>缺点</strong>：可能丢失全局上下文</li>
+</ul>
+<h4 id="2-Refine模式"><a href="#2-Refine模式" class="headerlink" title="2. Refine模式"></a>2. Refine模式</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">qa_chain_refine = RetrievalQA.from_chain_type(</span><br><span class="line">    llm,</span><br><span class="line">    retriever=vectordb.as_retriever(),</span><br><span class="line">    chain_type=<span class="string">&quot;refine&quot;</span>  <span class="comment"># 迭代精炼答案</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>优点</strong>：答案质量更高</li>
+<li><strong>缺点</strong>：API调用次数多，延迟高</li>
+</ul>
+<h4 id="性能对比表"><a href="#性能对比表" class="headerlink" title="性能对比表"></a>性能对比表</h4><table>
+<thead>
+<tr>
+<th align="left">类型</th>
+<th align="left">速度</th>
+<th align="left">内存占用</th>
+<th align="left">答案质量</th>
+<th align="left">适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>stuff</code>(默认)</td>
+<td align="left">快</td>
+<td align="left">高</td>
+<td align="left">中等</td>
+<td align="left">短文档(&lt;4K tokens)</td>
+</tr>
+<tr>
+<td align="left"><code>map_reduce</code></td>
+<td align="left">中等</td>
+<td align="left">低</td>
+<td align="left">中等</td>
+<td align="left">超长文档</td>
+</tr>
+<tr>
+<td align="left"><code>refine</code></td>
+<td align="left">慢</td>
+<td align="left">中等</td>
+<td align="left">高</td>
+<td align="left">精确答案需求</td>
+</tr>
+</tbody></table>
+<h3 id="四、上下文多轮对话"><a href="#四、上下文多轮对话" class="headerlink" title="四、上下文多轮对话"></a>四、上下文多轮对话</h3><p>在完成每一次回答后，更新记忆，可以实现多轮对话。</p>
+<h4 id="1-记忆管理（ConversationBufferMemory）"><a href="#1-记忆管理（ConversationBufferMemory）" class="headerlink" title="1. 记忆管理（ConversationBufferMemory）"></a>1. 记忆管理（ConversationBufferMemory）</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.memory <span class="keyword">import</span> ConversationBufferMemory</span><br><span class="line"></span><br><span class="line">memory = ConversationBufferMemory(</span><br><span class="line">    memory_key=<span class="string">&quot;chat_history&quot;</span>,  <span class="comment"># 存储对话记录的字段名</span></span><br><span class="line">    return_messages=<span class="literal">True</span>        <span class="comment"># 以消息对象格式存储</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><strong>功能特点</strong>：</p>
+<ul>
+<li><p>自动维护对话历史列表</p>
+</li>
+<li><p>支持上下文关联问答（如指代消解）</p>
+</li>
+<li><p>存储格式示例：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">    HumanMessage(content=<span class="string">&quot;What is ML?&quot;</span>),</span><br><span class="line">    AIMessage(content=<span class="string">&quot;Machine learning is...&quot;</span>),</span><br><span class="line">    HumanMessage(content=<span class="string">&quot;Why use it?&quot;</span>)</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-对话链（ConversationalRetrievalChain）"><a href="#2-对话链（ConversationalRetrievalChain）" class="headerlink" title="2. 对话链（ConversationalRetrievalChain）"></a>2. 对话链（ConversationalRetrievalChain）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from langchain.chains import ConversationalRetrievalChain</span><br><span class="line"></span><br><span class="line">qa = ConversationalRetrievalChain.from_llm(</span><br><span class="line">    llm=ChatOpenAI(temperature=0),</span><br><span class="line">    retriever=vectordb.as_retriever(),</span><br><span class="line">    memory=memory,</span><br><span class="line">    return_source_documents=True</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键参数</strong>：</p>
+<ul>
+<li><code>max_tokens_limit=3000</code>：控制检索上下文长度</li>
+<li><code>get_chat_history=lambda x: x</code>：自定义历史记录格式化</li>
+</ul>
+</li>
+</ul>
+<h3 id="五、完整工作流实现"><a href="#五、完整工作流实现" class="headerlink" title="五、完整工作流实现"></a>五、完整工作流实现</h3><h4 id="1-初始化聊天机器人"><a href="#1-初始化聊天机器人" class="headerlink" title="1. 初始化聊天机器人"></a>1. 初始化聊天机器人</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">cbfs</span>(<span class="params">param.Parameterized</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.qa = load_db(<span class="string">&quot;lecture.pdf&quot;</span>, <span class="string">&quot;stuff&quot;</span>, <span class="number">4</span>)  <span class="comment"># 加载知识库</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">convchain</span>(<span class="params">self, query</span>):</span></span><br><span class="line">        result = self.qa(&#123;</span><br><span class="line">            <span class="string">&quot;question&quot;</span>: query,</span><br><span class="line">            <span class="string">&quot;chat_history&quot;</span>: self.chat_history  <span class="comment"># 传入历史记录</span></span><br><span class="line">        &#125;)</span><br><span class="line">        self.chat_history.extend([(query, result[<span class="string">&quot;answer&quot;</span>])])  <span class="comment"># 更新历史</span></span><br><span class="line">        <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-文档处理流水线"><a href="#2-文档处理流水线" class="headerlink" title="2. 文档处理流水线"></a>2. 文档处理流水线</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">load_db</span>(<span class="params">file, chain_type, k</span>):</span></span><br><span class="line">    <span class="comment"># 1. 加载并分割PDF</span></span><br><span class="line">    loader = PyPDFLoader(file)</span><br><span class="line">    text_splitter = RecursiveCharacterTextSplitter(chunk_size=<span class="number">1000</span>, chunk_overlap=<span class="number">150</span>)</span><br><span class="line">    docs = text_splitter.split_documents(loader.load())</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 2. 创建向量库</span></span><br><span class="line">    db = DocArrayInMemorySearch.from_documents(docs, OpenAIEmbeddings())</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 3. 构建对话链</span></span><br><span class="line">    <span class="keyword">return</span> ConversationalRetrievalChain.from_llm(</span><br><span class="line">        llm=ChatOpenAI(model_name=<span class="string">&quot;gpt-3.5-turbo&quot;</span>),</span><br><span class="line">        chain_type=chain_type,</span><br><span class="line">        retriever=db.as_retriever(search_kwargs=&#123;<span class="string">&quot;k&quot;</span>: k&#125;),</span><br><span class="line">        return_source_documents=<span class="literal">True</span></span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="2-检索优化"><a href="#2-检索优化" class="headerlink" title="2. 检索优化"></a>2. 检索优化</h4><p><strong>策略</strong>：</p>
+<ul>
+<li><p>动态调整检索数量：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">retriever = db.as_retriever(search_kwargs=&#123;</span><br><span class="line">    &quot;k&quot;: 5 if len(chat_history)&gt;3 else 3  # 历史较长时扩大检索范围</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+<li><p>混合检索模式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">retriever = db.as_retriever(</span><br><span class="line">    search_type=&quot;mmr&quot;,  # 最大边际相关性</span><br><span class="line">    search_kwargs=&#123;&quot;k&quot;: 6, &quot;fetch_k&quot;: 10&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://MUMU46.github.io">MUMU</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://mumu46.github.io/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/">http://mumu46.github.io/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://MUMU46.github.io" target="_blank">MUMU's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/RAG/">RAG</a><a class="post-meta__tags" href="/tags/LLM/">LLM</a></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/06/16/%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F/" title=""><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info"></div></div></a></div><div class="next-post pull-right"><a href="/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/" title="RAG学习笔记（三）-Retrieval（检索）"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">RAG学习笔记（三）-Retrieval（检索）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/" title="RAG学习笔记（三）-Retrieval（检索）"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-22</div><div class="title">RAG学习笔记（三）-Retrieval（检索）</div></div></a></div><div><a href="/2025/04/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/" title="RAG学习笔记（一）"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-20</div><div class="title">RAG学习笔记（一）</div></div></a></div><div><a href="/2025/05/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Embeddings/" title="RAG学习笔记（二）--Embeddings"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-20</div><div class="title">RAG学习笔记（二）--Embeddings</div></div></a></div><div><a href="/2025/08/24/Rankify%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" title="Rankify论文学习"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-24</div><div class="title">Rankify论文学习</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">MUMU</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/MUMU46/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/MUMU46" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:mumu_g@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my blog!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#RAG%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.</span> <span class="toc-text">RAG工作流程回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E7%A1%80%E9%97%AE%E7%AD%94%E9%93%BE%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">一、基础问答链实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%88%9D%E5%A7%8B%E5%8C%96%E7%BB%84%E4%BB%B6"><span class="toc-number">2.1.</span> <span class="toc-text">1. 初始化组件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%89%A7%E8%A1%8C%E9%97%AE%E7%AD%94"><span class="toc-number">2.2.</span> <span class="toc-text">2. 执行问答</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E9%AB%98%E7%BA%A7%E6%8F%90%E7%A4%BA%E8%AF%8D%E5%B7%A5%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">二、高级提示词工程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%AE%9A%E5%88%B6%E6%8F%90%E7%A4%BA%E6%A8%A1%E6%9D%BF"><span class="toc-number">3.1.</span> <span class="toc-text">1. 定制提示模板</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%BA%94%E7%94%A8%E5%AE%9A%E5%88%B6%E6%8F%90%E7%A4%BA"><span class="toc-number">3.2.</span> <span class="toc-text">2. 应用定制提示</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E9%97%AE%E7%AD%94%E9%93%BE%E7%B1%BB%E5%9E%8B%E5%AF%B9%E6%AF%94"><span class="toc-number">4.</span> <span class="toc-text">三、问答链类型对比</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Map-Reduce%E6%A8%A1%E5%BC%8F"><span class="toc-number">4.1.</span> <span class="toc-text">1. Map-Reduce模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-Refine%E6%A8%A1%E5%BC%8F"><span class="toc-number">4.2.</span> <span class="toc-text">2. Refine模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94%E8%A1%A8"><span class="toc-number">4.3.</span> <span class="toc-text">性能对比表</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E4%B8%8A%E4%B8%8B%E6%96%87%E5%A4%9A%E8%BD%AE%E5%AF%B9%E8%AF%9D"><span class="toc-number">5.</span> <span class="toc-text">四、上下文多轮对话</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E8%AE%B0%E5%BF%86%E7%AE%A1%E7%90%86%EF%BC%88ConversationBufferMemory%EF%BC%89"><span class="toc-number">5.1.</span> <span class="toc-text">1. 记忆管理（ConversationBufferMemory）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%AF%B9%E8%AF%9D%E9%93%BE%EF%BC%88ConversationalRetrievalChain%EF%BC%89"><span class="toc-number">5.2.</span> <span class="toc-text">2. 对话链（ConversationalRetrievalChain）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%AE%8C%E6%95%B4%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%AE%9E%E7%8E%B0"><span class="toc-number">6.</span> <span class="toc-text">五、完整工作流实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%88%9D%E5%A7%8B%E5%8C%96%E8%81%8A%E5%A4%A9%E6%9C%BA%E5%99%A8%E4%BA%BA"><span class="toc-number">6.1.</span> <span class="toc-text">1. 初始化聊天机器人</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%96%87%E6%A1%A3%E5%A4%84%E7%90%86%E6%B5%81%E6%B0%B4%E7%BA%BF"><span class="toc-number">6.2.</span> <span class="toc-text">2. 文档处理流水线</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%A3%80%E7%B4%A2%E4%BC%98%E5%8C%96"><span class="toc-number">6.3.</span> <span class="toc-text">2. 检索优化</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/08/24/Rankify%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" title="Rankify论文学习"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Rankify论文学习"/></a><div class="content"><a class="title" href="/2025/08/24/Rankify%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" title="Rankify论文学习">Rankify论文学习</a><time datetime="2025-08-24T09:32:04.000Z" title="发表于 2025-08-24 17:32:04">2025-08-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/06/16/%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F/" title="无题"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2025/06/16/%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F/" title="无题">无题</a><time datetime="2025-06-16T13:42:39.137Z" title="发表于 2025-06-16 21:42:39">2025-06-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/" title="RAG学习笔记（四）-问答系统"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG学习笔记（四）-问答系统"/></a><div class="content"><a class="title" href="/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/" title="RAG学习笔记（四）-问答系统">RAG学习笔记（四）-问答系统</a><time datetime="2025-05-23T12:59:22.000Z" title="发表于 2025-05-23 20:59:22">2025-05-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/" title="RAG学习笔记（三）-Retrieval（检索）"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG学习笔记（三）-Retrieval（检索）"/></a><div class="content"><a class="title" href="/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/" title="RAG学习笔记（三）-Retrieval（检索）">RAG学习笔记（三）-Retrieval（检索）</a><time datetime="2025-05-22T08:00:54.000Z" title="发表于 2025-05-22 16:00:54">2025-05-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Embeddings/" title="RAG学习笔记（二）--Embeddings"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG学习笔记（二）--Embeddings"/></a><div class="content"><a class="title" href="/2025/05/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Embeddings/" title="RAG学习笔记（二）--Embeddings">RAG学习笔记（二）--Embeddings</a><time datetime="2025-05-20T08:03:30.000Z" title="发表于 2025-05-20 16:03:30">2025-05-20</time></div></div></div></div></div></div></main><footer id="footer" style="background: url(/img/about.jpg)"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2025 By MUMU</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

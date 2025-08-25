@@ -1,0 +1,298 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>RAG学习笔记（一） | MUMU's blog</title><meta name="author" content="MUMU"><meta name="copyright" content="MUMU"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="🌟 什么是 Retrieval-Augmented Generation (RAG)？RAG 是一种技术：在你提问时，大语言模型（LLM）会从外部文档中检索相关内容，再结合这些内容生成回答。 不同数据来源处理方式：   数据来源 使用 Loader 技术核心    PDF 文档 PyPDFLoader 按页提取文本与元数据   YouTube 音频 YoutubeAudioLoader + Wh">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RAG学习笔记（一）">
+<meta property="og:url" content="http://mumu46.github.io/2025/04/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/index.html">
+<meta property="og:site_name" content="MUMU&#39;s blog">
+<meta property="og:description" content="🌟 什么是 Retrieval-Augmented Generation (RAG)？RAG 是一种技术：在你提问时，大语言模型（LLM）会从外部文档中检索相关内容，再结合这些内容生成回答。 不同数据来源处理方式：   数据来源 使用 Loader 技术核心    PDF 文档 PyPDFLoader 按页提取文本与元数据   YouTube 音频 YoutubeAudioLoader + Wh">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg">
+<meta property="article:published_time" content="2025-04-20T02:50:04.000Z">
+<meta property="article:modified_time" content="2025-05-20T08:01:14.448Z">
+<meta property="article:author" content="MUMU">
+<meta property="article:tag" content="RAG">
+<meta property="article:tag" content="LLM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="http://mumu46.github.io/2025/04/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'RAG学习笔记（一）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-05-20 16:01:14'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="MUMU's blog"><img class="site-icon" src="/img/avatar.png"/><span class="site-name">MUMU's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">RAG学习笔记（一）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-04-20T02:50:04.000Z" title="发表于 2025-04-20 10:50:04">2025-04-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-20T08:01:14.448Z" title="更新于 2025-05-20 16:01:14">2025-05-20</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="RAG学习笔记（一）"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="🌟-什么是-Retrieval-Augmented-Generation-RAG-？"><a href="#🌟-什么是-Retrieval-Augmented-Generation-RAG-？" class="headerlink" title="🌟 什么是 Retrieval-Augmented Generation (RAG)？"></a>🌟 什么是 Retrieval-Augmented Generation (RAG)？</h2><p>RAG 是一种技术：在你提问时，大语言模型（LLM）会从外部文档中<strong>检索相关内容</strong>，再结合这些内容生成回答。</p>
+<h5 id="不同数据来源处理方式："><a href="#不同数据来源处理方式：" class="headerlink" title="不同数据来源处理方式："></a>不同数据来源处理方式：</h5><table>
+<thead>
+<tr>
+<th>数据来源</th>
+<th>使用 Loader</th>
+<th>技术核心</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PDF 文档</td>
+<td><code>PyPDFLoader</code></td>
+<td>按页提取文本与元数据</td>
+</tr>
+<tr>
+<td>YouTube 音频</td>
+<td><code>YoutubeAudioLoader + Whisper</code></td>
+<td>转录视频音频为文字</td>
+</tr>
+<tr>
+<td>网页内容</td>
+<td><code>WebBaseLoader</code></td>
+<td>从网页抓取文本</td>
+</tr>
+<tr>
+<td>Notion 导出</td>
+<td><code>NotionDirectoryLoader</code></td>
+<td>批量读取 Markdown 格式的笔记内容</td>
+</tr>
+</tbody></table>
+<p><strong>eg</strong>：PDF文档</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.document_loaders <span class="keyword">import</span> PyPDFLoader</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载 PDF 文件（支持本地路径或 URL）</span></span><br><span class="line">loader = PyPDFLoader(<span class="string">&quot;docs/cs229_lectures/MachineLearning-Lecture01.pdf&quot;</span>)</span><br><span class="line">pages = loader.load()  <span class="comment"># 返回 Document 对象列表，每个页面一个 Document</span></span><br></pre></td></tr></table></figure>
+
+<p>输出示例：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">    Document(</span><br><span class="line">        page_content=<span class="string">&quot;Machine Learning Lecture 1...\n\nIntroduction...&quot;</span>, </span><br><span class="line">        metadata=&#123;<span class="attr">&quot;source&quot;</span>: <span class="string">&quot;file_path.pdf&quot;</span>, <span class="attr">&quot;page&quot;</span>: <span class="number">0</span>&#125;</span><br><span class="line">    ),</span><br><span class="line">    Document(</span><br><span class="line">        page_content=<span class="string">&quot;...&quot;</span>, </span><br><span class="line">        metadata=&#123;<span class="attr">&quot;source&quot;</span>: <span class="string">&quot;file_path.pdf&quot;</span>, <span class="attr">&quot;page&quot;</span>: <span class="number">1</span>&#125;</span><br><span class="line">    ),</span><br><span class="line">    ...</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p><strong>Token（标记）</strong>是模型理解和处理文本的基本单位</p>
+<h2 id="🧠-为什么要对文档进行切分？"><a href="#🧠-为什么要对文档进行切分？" class="headerlink" title="🧠 为什么要对文档进行切分？"></a>🧠 为什么要对文档进行切分？</h2><p>大语言模型（LLM）有 <strong>上下文长度限制</strong>，比如 GPT-4 支持约 128k tokens 的上下文，但普通使用最多只能输入几千到几万 tokens。</p>
+<p><strong>因此：</strong></p>
+<ul>
+<li>在将文档传入 LLM 进行问答之前，需要将大文档拆成<strong>若干小块（chunks）</strong>；</li>
+<li>这些小块应该尽量保持<strong>语义连续性</strong>，防止切断句子或逻辑结构；</li>
+<li>切分结果会用于后续的<strong>向量化 + 召回 + RAG问答</strong>。</li>
+</ul>
+<p>在RAG（检索增强生成）流程中，文档分割的<strong>目的</strong>是：</p>
+<ul>
+<li>将大文档拆分为<strong>语义连贯的小块</strong>（chunks）</li>
+<li>确保分割后的文本能<strong>保留上下文信息</strong></li>
+<li>适应LLM的上下文窗口限制（如GPT-4的token上限）</li>
+</ul>
+<p>LangChain 提供了多个切分器（TextSplitter 类）：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>名称</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>简单字符切分</td>
+<td><code>CharacterTextSplitter</code></td>
+<td>按字符长度切分（可设分隔符、重叠）</td>
+</tr>
+<tr>
+<td>递归字符切分</td>
+<td><code>RecursiveCharacterTextSplitter</code></td>
+<td>优先按段落/句子等大粒度分隔符切分，不够再细分</td>
+</tr>
+<tr>
+<td>Token 切分</td>
+<td><code>TokenTextSplitter</code></td>
+<td>按 token 数切分，适合控制上下文长度</td>
+</tr>
+<tr>
+<td>Markdown 切分</td>
+<td><code>MarkdownHeaderTextSplitter</code></td>
+<td>利用 Markdown 标题结构进行层级化分割</td>
+</tr>
+</tbody></table>
+<p>看一个例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.text_splitter <span class="keyword">import</span> RecursiveCharacterTextSplitter, CharacterTextSplitter</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义分割参数</span></span><br><span class="line">chunk_size = <span class="number">26</span>  <span class="comment"># 每块最大字符数</span></span><br><span class="line">chunk_overlap = <span class="number">4</span>  <span class="comment"># 块间重叠字符数</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化两种分割器</span></span><br><span class="line">r_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)</span><br><span class="line">c_splitter = CharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)</span><br><span class="line"></span><br><span class="line">text1 = <span class="string">&#x27;abcdefghijklmnopqrstuvwxyz&#x27;</span></span><br><span class="line">r_splitter.split_text(text1)  <span class="comment"># 不分割（长度=26，正好等于chunk_size）</span></span><br><span class="line">text2 = <span class="string">&#x27;abcdefghijklmnopqrstuvwxyzabcdefg&#x27;</span></span><br><span class="line">r_splitter.split_text(text2)  <span class="comment"># 分割为2块（&quot;abcdefghijklmnopqrstuvwxyz&quot; + &quot;abcdefg&quot;）</span></span><br><span class="line"><span class="comment">#c_splitter字符切分器</span></span><br><span class="line">text3 = <span class="string">&quot;a b c d e f g h i j k l m n o p q r s t u v w x y z&quot;</span></span><br><span class="line">c_splitter.split_text(text3)  <span class="comment"># 未分割（默认分隔符是空字符，必须在分隔符处分割）</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改一下，显式指定出空格为分隔符就可以了</span></span><br><span class="line">c_splitter = CharacterTextSplitter(separator=<span class="string">&#x27; &#x27;</span>, chunk_size=<span class="number">26</span>, chunk_overlap=<span class="number">4</span>)</span><br><span class="line">c_splitter.split_text(text3)  <span class="comment"># 按空格分割</span></span><br><span class="line"><span class="comment">#输出：[&#x27;a b c d e f g h i j k l m&#x27;, &#x27;f g h i j k l m n o p q r&#x27;, ...]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="分割器对比"><a href="#分割器对比" class="headerlink" title="分割器对比"></a>分割器对比</h3><table>
+<thead>
+<tr>
+<th>Splitter</th>
+<th>切分依据</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>CharacterTextSplitter</code></td>
+<td>字符 + 分隔符</td>
+<td>快速、简单</td>
+<td>不考虑 token 数，易超限</td>
+</tr>
+<tr>
+<td><code>RecursiveCharacterTextSplitter</code></td>
+<td>多级分隔符 + 语义结构</td>
+<td>保语义完整、结构清晰</td>
+<td>仍然是字符级别，token 数可能不精确</td>
+</tr>
+<tr>
+<td><code>TokenTextSplitter</code></td>
+<td>token 数</td>
+<td>与模型 token 精确对齐</td>
+<td>tokenizer 依赖，切分不一定保语义完整</td>
+</tr>
+</tbody></table>
+<p>CharacterTextSplitter <strong>VS</strong> RecursiveCharacterTextSplitter</p>
+<table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="left"><code>CharacterTextSplitter</code></th>
+<th align="left"><code>RecursiveCharacterTextSplitter</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>分隔符依赖</strong></td>
+<td align="left">必须找到指定分隔符</td>
+<td align="left">可降级到字符级切割</td>
+</tr>
+<tr>
+<td align="left"><strong>默认分隔符</strong></td>
+<td align="left"><code>&quot;&quot;</code>（空字符串）</td>
+<td align="left"><code>[&quot;\n\n&quot;, &quot;\n&quot;, &quot; &quot;, &quot;&quot;]</code>（多级）</td>
+</tr>
+<tr>
+<td align="left"><strong>切割确定性</strong></td>
+<td align="left">严格遵循分隔符</td>
+<td align="left">更灵活，保证一定有输出</td>
+</tr>
+<tr>
+<td align="left"><strong>适用场景</strong></td>
+<td align="left">结构化文本（如代码、Markdown）</td>
+<td align="left">通用文本（尤其是未知格式的文本）</td>
+</tr>
+</tbody></table>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://MUMU46.github.io">MUMU</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://mumu46.github.io/2025/04/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/">http://mumu46.github.io/2025/04/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://MUMU46.github.io" target="_blank">MUMU's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/RAG/">RAG</a><a class="post-meta__tags" href="/tags/LLM/">LLM</a></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/04/24/%E8%A1%A8%E6%83%85%E8%AF%86%E5%88%AB%E7%B3%BB%E7%BB%9F/" title=""><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info"></div></div></a></div><div class="next-post pull-right"><a href="/2025/04/19/pytorch%E6%A8%A1%E5%9E%8B%E8%BD%AC%E6%8D%A2%E4%B8%BAtensorflow/" title=""><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info"></div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/" title="RAG学习笔记（三）-Retrieval（检索）"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-22</div><div class="title">RAG学习笔记（三）-Retrieval（检索）</div></div></a></div><div><a href="/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/" title="RAG学习笔记（四）-问答系统"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-23</div><div class="title">RAG学习笔记（四）-问答系统</div></div></a></div><div><a href="/2025/05/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Embeddings/" title="RAG学习笔记（二）--Embeddings"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-20</div><div class="title">RAG学习笔记（二）--Embeddings</div></div></a></div><div><a href="/2025/08/24/Rankify%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" title="Rankify论文学习"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-24</div><div class="title">Rankify论文学习</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">MUMU</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/MUMU46/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/MUMU46" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:mumu_g@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my blog!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%8C%9F-%E4%BB%80%E4%B9%88%E6%98%AF-Retrieval-Augmented-Generation-RAG-%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">🌟 什么是 Retrieval-Augmented Generation (RAG)？</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E6%95%B0%E6%8D%AE%E6%9D%A5%E6%BA%90%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">不同数据来源处理方式：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%A7%A0-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AF%B9%E6%96%87%E6%A1%A3%E8%BF%9B%E8%A1%8C%E5%88%87%E5%88%86%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">🧠 为什么要对文档进行切分？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%89%B2%E5%99%A8%E5%AF%B9%E6%AF%94"><span class="toc-number">2.1.</span> <span class="toc-text">分割器对比</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/08/24/Rankify%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" title="Rankify论文学习"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Rankify论文学习"/></a><div class="content"><a class="title" href="/2025/08/24/Rankify%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" title="Rankify论文学习">Rankify论文学习</a><time datetime="2025-08-24T09:32:04.000Z" title="发表于 2025-08-24 17:32:04">2025-08-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/06/16/%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F/" title="无题"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2025/06/16/%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F/" title="无题">无题</a><time datetime="2025-06-16T13:42:39.137Z" title="发表于 2025-06-16 21:42:39">2025-06-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/" title="RAG学习笔记（四）-问答系统"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG学习笔记（四）-问答系统"/></a><div class="content"><a class="title" href="/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/" title="RAG学习笔记（四）-问答系统">RAG学习笔记（四）-问答系统</a><time datetime="2025-05-23T12:59:22.000Z" title="发表于 2025-05-23 20:59:22">2025-05-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/" title="RAG学习笔记（三）-Retrieval（检索）"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG学习笔记（三）-Retrieval（检索）"/></a><div class="content"><a class="title" href="/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/" title="RAG学习笔记（三）-Retrieval（检索）">RAG学习笔记（三）-Retrieval（检索）</a><time datetime="2025-05-22T08:00:54.000Z" title="发表于 2025-05-22 16:00:54">2025-05-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Embeddings/" title="RAG学习笔记（二）--Embeddings"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG学习笔记（二）--Embeddings"/></a><div class="content"><a class="title" href="/2025/05/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Embeddings/" title="RAG学习笔记（二）--Embeddings">RAG学习笔记（二）--Embeddings</a><time datetime="2025-05-20T08:03:30.000Z" title="发表于 2025-05-20 16:03:30">2025-05-20</time></div></div></div></div></div></div></main><footer id="footer" style="background: url(/img/about.jpg)"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2025 By MUMU</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

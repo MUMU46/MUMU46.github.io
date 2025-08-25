@@ -1,0 +1,293 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>MUMU's blog | MUMU's blog</title><meta name="author" content="MUMU"><meta name="copyright" content="MUMU"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="为什么选择BERT+BiLSTM而不是纯BERT来处理文本特征？  1我们使用了 BERT 提取上下文语义特征，但考虑到用户发布的社区文本往往呈现出强烈的顺序逻辑，例如情绪演化、对比表达、递进结构等，我们在特征提取后通过 BiLSTM 进一步建模时间依赖关系。   在跨模态语义对齐的具体实现中，你们是如何设计损失函数的？  1BERT 和 BiLSTM 属于特征编码模块，最终输出通过一个分类头进">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MUMU&#39;s blog">
+<meta property="og:url" content="http://mumu46.github.io/2025/06/16/%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="MUMU&#39;s blog">
+<meta property="og:description" content="为什么选择BERT+BiLSTM而不是纯BERT来处理文本特征？  1我们使用了 BERT 提取上下文语义特征，但考虑到用户发布的社区文本往往呈现出强烈的顺序逻辑，例如情绪演化、对比表达、递进结构等，我们在特征提取后通过 BiLSTM 进一步建模时间依赖关系。   在跨模态语义对齐的具体实现中，你们是如何设计损失函数的？  1BERT 和 BiLSTM 属于特征编码模块，最终输出通过一个分类头进">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg">
+<meta property="article:published_time" content="2025-06-16T13:42:39.137Z">
+<meta property="article:modified_time" content="2025-06-17T02:24:25.696Z">
+<meta property="article:author" content="MUMU">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="http://mumu46.github.io/2025/06/16/%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MUMU\'s blog',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-06-17 10:24:25'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="MUMU's blog"><img class="site-icon" src="/img/avatar.png"/><span class="site-name">MUMU's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">无题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-06-16T13:42:39.137Z" title="发表于 2025-06-16 21:42:39">2025-06-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-06-17T02:24:25.696Z" title="更新于 2025-06-17 10:24:25">2025-06-17</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><ol>
+<li>为什么选择BERT+BiLSTM而不是纯BERT来处理文本特征？</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">我们使用了 BERT 提取上下文语义特征，但考虑到用户发布的社区文本往往呈现出强烈的顺序逻辑，例如情绪演化、对比表达、递进结构等，我们在特征提取后通过 BiLSTM 进一步建模时间依赖关系。</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在跨模态语义对齐的具体实现中，你们是如何设计损失函数的？</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BERT 和 BiLSTM 属于特征编码模块，最终输出通过一个分类头进行情绪预测，所以只需要 一个 CrossEntropyLoss 用于分类，不需要多个损失函数或中间 supervision</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>在实际训练中，<strong>两者的参数是如何协同优化的</strong>（例如是否分阶段训练、损失函数设计）？</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在训练过程中我们采用端到端联合优化方式，BERT、BiLSTM 和最终分类器共用一个交叉熵（CrossEntropyLoss）进行反向传播，不进行分阶段训练。 想先训练稳定低层再微调，就使用两阶段训练：先训练 BiLSTM + FC，后微调 BERT（Unfreeze）</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><p>你提到“补充时间关系”——能否结合具体数据（如用户聊天文本的时序特性）说明BiLSTM的补充作用？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对于情绪推进式的表达，比如用户发布“最近真的很累，一开始我还试着调整状态，但现在每天醒来都觉得毫无意义。”BERT 可能看作是一堆句子或词片段之间的注意力，但 BiLSTM 会从**“累 → 调整 → 毫无意义”中学习到一个递进性的情绪转变结构**。有助于识别“压抑-努力-绝望”这一演化过程。还有对比结构的表达，比如“和别人聊天时我还能装出开心，但一个人就崩溃了。”“装出开心” vs “就崩溃了”之间存在转折对比关系。BiLSTM 能沿时间顺序感知到句子结构的对比依赖（but/although/却），进一步帮助模型判断情绪波动。</span><br></pre></td></tr></table></figure></li>
+<li><p>在跨模态对齐阶段，文本和图像特征的融合策略是什么？是否遇到过模态间特征尺度差异的问题？如何解决的？</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">采用的融合策略是：</span><br><span class="line">双向 Cross-modal Attention（图→文，文→图）+ 模态私有建模（Self Attention）+ 拼接融合，实现语义级别的模态对齐，我们还保留了两个模态自身的私有特征，并在分类前将四个特征向量拼接，通过 FC 层做情绪分类。</span><br><span class="line"></span><br><span class="line">是的，图像特征（如 ResNet 输出）和文本特征（如 BERT）在原始维度上存在较大差异，为了实现有效的跨模态注意力交互，我们通过单层线性变换（Linear Projection）将两者都投影到统一的特征空间（如256维），以满足矩阵乘法的结构兼容性，并增强语义对齐能力。</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>操作</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1️⃣ 模态内提取</td>
+<td>用 ResNet 提取图像特征；BERT + BiLSTM 提取文本特征</td>
+<td>获取图像 patch 表达 和 词级上下文语义</td>
+</tr>
+<tr>
+<td>2️⃣ 尺度统一</td>
+<td>将图像/文本特征统一投影为相同维度（如 d=256）</td>
+<td>为跨模态融合做准备</td>
+</tr>
+<tr>
+<td>3️⃣ 跨模态注意力（C-MHA）</td>
+<td>图→文，文→图，双向对齐</td>
+<td>构建共享语义空间，提取公有特征</td>
+</tr>
+<tr>
+<td>4️⃣ 自模态注意力（S-MHA）</td>
+<td>模态内部建模</td>
+<td>捕捉模态特有的细节情绪线索</td>
+</tr>
+<tr>
+<td>5️⃣ 拼接融合</td>
+<td>拼接图→文、文→图、自模态两个特征</td>
+<td>得到最终融合特征输入分类器</td>
+</tr>
+</tbody></table>
+<ol start="6">
+<li>实验中有没有发现某一模态主导分类结果的现象？</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">有，因为用户在表达情绪时，往往通过语言（词汇、句式、语气）直接传达，如“我感到很崩溃”。相比之下，图像信息更多是补充/隐喻性的，某些样本中图像缺失或缺乏情感线索。</span><br><span class="line"></span><br><span class="line">通过双向 Cross-modal Attention结构，允许两个模态互相引导，同时也保留各自私有特征，可以有效提升图像贡献度。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="面试系统"><a href="#面试系统" class="headerlink" title="面试系统"></a>面试系统</h3><ol>
+<li>你提到系统“利用 HuggingFace 嵌入模型抽取简历语义特征”，请你具体说明你选择的是哪个 HuggingFace 模型？它是基于句向量（sentence embedding）还是 token 级别？你为什么选择这个模型，它相较于 OpenAI 或 Cohere 的嵌入模型有什么优劣？</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">模型名称：</span><br><span class="line">sentence-transformers/all-MiniLM-L6-v2</span><br><span class="line">（Sentence-BERT架构的轻量级变体）</span><br><span class="line"></span><br><span class="line">嵌入类型：</span><br><span class="line">✅ 句向量（Sentence Embedding）</span><br><span class="line">将整个文本块编码为384维向量，通过mean pooling聚合token级表示，专门优化过语义相似度任务</span><br><span class="line"></span><br><span class="line">因为内存占用较少、免费</span><br><span class="line"></span><br><span class="line">使用了余弦相似度。</span><br></pre></td></tr></table></figure>
+
+<p>你是否使用了向量数据库（如 FAISS 或 Chroma）来检索简历段落？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FAISS</span><br></pre></td></tr></table></figure>
+
+<p>简历信息在 Prompt 中是怎么嵌入的（作为 system prompt、context 还是拼接到 input 中）？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#用 System Prompt 定义“你是经验丰富的面试官”等身份和行为规则</span></span><br><span class="line"></span><br><span class="line">system_prompt = <span class="string">f&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">你是一位经验丰富的面试官。请根据下面的简历信息提出有针对性的面试问题，并在后续对话中持续参考这些内容：</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">简历信息如下：</span></span><br><span class="line"><span class="string"><span class="subst">&#123;resume_info&#125;</span></span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="comment">#在ConversationalRetrievalChain 中配合使用 ChatPromptTemplate+Memory：</span></span><br><span class="line"><span class="keyword">from</span> langchain.prompts <span class="keyword">import</span> ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate</span><br><span class="line"></span><br><span class="line">prompt_template = ChatPromptTemplate.from_messages([</span><br><span class="line">    SystemMessagePromptTemplate.from_template(system_prompt),</span><br><span class="line">    HumanMessagePromptTemplate.from_template(<span class="string">&quot;&#123;question&#125;&quot;</span>)</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment">#将简历放入System Prompt </span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>如何确保在多轮对话中，大模型始终能“记住”简历的关键信息？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Prompt 拼接机制：</span><br><span class="line"></span><br><span class="line">- 将简历信息显式插入到 prompt 中，每轮都会重新拼接（而不是只在第一轮提供）；</span><br><span class="line"></span><br><span class="line">- 这样即使模型本身不会记忆简历内容，输入中始终带有核心背景，从而保证回答的连贯性和针对性。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">qa_chain = ConversationalRetrievalChain.from_llm(</span><br><span class="line">    llm=llm,</span><br><span class="line">    retriever=retriever,</span><br><span class="line">    memory=ConversationBufferMemory(</span><br><span class="line">        memory_key=<span class="string">&quot;chat_history&quot;</span>,</span><br><span class="line">        return_messages=<span class="literal">True</span></span><br><span class="line">    ),</span><br><span class="line">    combine_docs_chain_kwargs=&#123;<span class="string">&quot;prompt&quot;</span>: prompt_template&#125;,<span class="comment">##</span></span><br><span class="line">    return_source_documents=<span class="literal">True</span></span><br><span class="line">)</span><br><span class="line"><span class="comment">#将system prompt加入ConversationalRetrievalChain </span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="记住历史对话的多轮对话"><a href="#记住历史对话的多轮对话" class="headerlink" title="记住历史对话的多轮对话"></a><strong>记住历史对话的多轮对话</strong></h4><p>使用 LangChain 的 <strong>Memory 模块</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.memory <span class="keyword">import</span> ConversationBufferMemory</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">load_db</span>(<span class="params">file, chain_type, k</span>):</span></span><br><span class="line">    ...</span><br><span class="line">    memory = ConversationBufferMemory(</span><br><span class="line">        memory_key=<span class="string">&quot;chat_history&quot;</span>,</span><br><span class="line">        return_messages=<span class="literal">True</span></span><br><span class="line">    )</span><br><span class="line">    qa = ConversationalRetrievalChain.from_llm(</span><br><span class="line">        llm=llm,</span><br><span class="line">        retriever=retriever,</span><br><span class="line">        chain_type=chain_type,</span><br><span class="line">        memory=memory,<span class="comment">#这样就不再需要手动传入 chat_history，它会自动记住之前的轮次。</span></span><br><span class="line">        return_source_documents=<span class="literal">True</span>,</span><br><span class="line">        return_generated_question=<span class="literal">True</span>,</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">return</span> qa, llm</span><br></pre></td></tr></table></figure>
+
+<p>然后你在调用 <code>qa()</code> 时，就**不再需要手动传入 <code>chat_history</code>**，它会自动记住之前的轮次。</p>
+<h3 id="1-自我介绍"><a href="#1-自我介绍" class="headerlink" title="1. 自我介绍"></a><strong>1. 自我介绍</strong></h3><p>首先，请你简单介绍一下自己，包括你的技术背景、项目经历以及为什么对NLP算法实习岗位感兴趣。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">上午好，我是郭琳琳，目前是华中师范大学计算机科学与技术专业本科生，我对NLP、大模型和多模态非常感兴趣，并在本科阶段有相关实践经历。</span><br><span class="line"></span><br><span class="line">我参与了一个国家级大创项目，负责“基于多模态情感分析的VR抑郁症在线分析平台”的核心建模部分。项目中我结合图像和文本模态，设计了融合跨模态注意力和自模态注意力的情绪分类模型，用于辅助识别用户的情绪状态，提升模型对抑郁倾向的感知能力。</span><br><span class="line"></span><br><span class="line">在近期的毕业实习中，我也主导开发了一个“智能面试训练系统”，该系统基于LangChain框架，结合 HuggingFace 嵌入模型和 RAG 架构，实现了对用户上传简历的语义检索与问答生成等功能。这个项目让我深入理解了大语言模型在实际应用中如何结合外部知识做推理、提问和上下文管理。</span><br><span class="line"></span><br><span class="line">未来希望继续在ai大模型方向不断学习，</span><br><span class="line">希望能有机会加入贵公司，谢谢！</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-项目经历"><a href="#2-项目经历" class="headerlink" title="2. 项目经历"></a><strong>2. 项目经历</strong></h3><h4 id="（1）基于多模态情感分析的VR抑郁症在线分析平台"><a href="#（1）基于多模态情感分析的VR抑郁症在线分析平台" class="headerlink" title="（1）基于多模态情感分析的VR抑郁症在线分析平台"></a><strong>（1）基于多模态情感分析的VR抑郁症在线分析平台</strong></h4><ul>
+<li>你在项目中提到使用了 <strong>BERT + BiLSTM</strong> 和 <strong>ResNet</strong> 进行特征提取，能否详细说明一下你是如何实现跨模态语义对齐的？</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">采用的融合策略是：</span><br><span class="line">双向 Cross-modal Attention（图→文，文→图）+ 模态私有建模（Self Attention）+ 拼接融合，实现语义级别的模态对齐，我们还保留了两个模态自身的私有特征，并在分类前将四个特征向量拼接，通过 FC 层做情绪分类。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在情感分类任务中，你使用了 <strong>MHA（多头注意力机制）</strong> 来提取公有与私有情绪特征，能否解释一下你的模型架构设计思路？</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">在多模态情感分类任务中，图像和文本分别包含情绪线索，但分布不一致。我们希望模型既能发现它们之间的共享情绪语义，又能保留各自模态中独特的私有情感特征。因此，我们基于 Transformer 的多头注意力机制，设计了“两个注意力通道”：跨模态注意力（Cross-modal Attention）和自模态注意力（Self-modal Attention）。</span><br><span class="line"></span><br><span class="line">使用 MHA（多头注意力）而不是单头的原因：MHA 能从多个子空间学习注意力分布，不同头可以专注于不同类型的情感信号（如：强烈语气、视觉暗色调、句式结构），这比单头注意力或拼接融合有更强的表征能力和灵活性。”</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这个项目的数据集是如何构建的？是否遇到数据不平衡的问题？如果有，你是如何处理的？</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">数据收集（社交平台爬取，及自构建社区数据）、数据清洗、数据标注、模态对齐（确保有文本和图片）</span><br><span class="line">数据不平衡：数据增强、类别权重、过采样、早停防止过拟合</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="（2）基于LLM的智能面试训练系统"><a href="#（2）基于LLM的智能面试训练系统" class="headerlink" title="（2）基于LLM的智能面试训练系统"></a><strong>（2）基于LLM的智能面试训练系统</strong></h4><ul>
+<li>你提到使用了 <strong>LangChain</strong> 和 <strong>RAG（检索增强生成）</strong> 架构，能否详细说明你是如何结合 <strong>HuggingFace 嵌入模型</strong> 进行简历解析的？</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">基于 LangChain 构建简历级 RAG 问答系统，结合 HuggingFace SentenceTransformer 嵌入模型完成语义检索与内容注入，引导大语言模型生成个性化面试问题。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在 <strong>Prompt 工程</strong> 方面，你设计了多种模板（面试问答、算法测评、面试回顾），能否分享一个具体的 Prompt 示例，并说明它的优化过程？</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#可以使用Few-shot Prompting（少样本提示）</span></span><br><span class="line">给出少量示例（通常 <span class="number">1</span>～<span class="number">5</span> 个），让模型模仿其结构、风格或格式。</span><br><span class="line">优点：</span><br><span class="line">生成内容更符合预期</span><br><span class="line">可引导模型风格与结构</span><br><span class="line"></span><br><span class="line">缺点：</span><br><span class="line">Prompt 长度变长，可能会导致 Token 限制或成本提升</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在训练或部署大模型时，你是否遇到过推理延迟或性能瓶颈？如果有，你是如何优化的？</li>
+</ul>
+<h3 id="3-技术能力"><a href="#3-技术能力" class="headerlink" title="3. 技术能力"></a><strong>3. 技术能力</strong></h3><ul>
+<li>你熟悉 <strong>BERT、CNN、MHA</strong> 等技术，能否谈谈你在 NLP 任务中最常用的模型架构？比如在文本分类任务中，你会如何选择模型？</li>
+<li>你提到掌握 <strong>Python、C++、Java</strong> 等语言，能否比较一下你在 <strong>Python（深度学习）</strong> 和 <strong>C++（高性能计算）</strong> 上的编程经验？</li>
+<li>你是否有过 <strong>模型部署（如 ONNX、TensorRT）</strong> 或 <strong>分布式训练（如 PyTorch DDP、DeepSpeed）</strong> 的经验？</li>
+</ul>
+<h3 id="4-团队协作与学习能力"><a href="#4-团队协作与学习能力" class="headerlink" title="4. 团队协作与学习能力"></a><strong>4. 团队协作与学习能力</strong></h3><ul>
+<li>你在 <strong>木犀团队</strong> 担任前端组组长，能否分享一个你在团队协作中遇到的挑战，以及你是如何解决的？</li>
+<li>你提到“学习能力较强”，能否举例说明你是如何快速掌握一项新技术（如 LangChain、RAG）并应用到项目中的？</li>
+</ul>
+<h3 id="5-职业规划"><a href="#5-职业规划" class="headerlink" title="5. 职业规划"></a><strong>5. 职业规划</strong></h3><ul>
+<li>你未来希望在 NLP 领域深入哪个方向？（如对话系统、信息抽取、大模型优化等）</li>
+<li>你如何看待当前大模型（如 ChatGPT、Gemini）的发展趋势？你认为它们在哪些场景下仍有局限性？</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://MUMU46.github.io">MUMU</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://mumu46.github.io/2025/06/16/%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F/">http://mumu46.github.io/2025/06/16/%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://MUMU46.github.io" target="_blank">MUMU's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/08/24/Rankify%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" title="Rankify论文学习"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Rankify论文学习</div></div></a></div><div class="next-post pull-right"><a href="/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/" title="RAG学习笔记（四）-问答系统"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">RAG学习笔记（四）-问答系统</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">MUMU</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/MUMU46/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/MUMU46" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:mumu_g@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my blog!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.</span> <span class="toc-text">面试系统</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%B0%E4%BD%8F%E5%8E%86%E5%8F%B2%E5%AF%B9%E8%AF%9D%E7%9A%84%E5%A4%9A%E8%BD%AE%E5%AF%B9%E8%AF%9D"><span class="toc-number">1.1.</span> <span class="toc-text">记住历史对话的多轮对话</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%87%AA%E6%88%91%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.</span> <span class="toc-text">1. 自我介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%A1%B9%E7%9B%AE%E7%BB%8F%E5%8E%86"><span class="toc-number">3.</span> <span class="toc-text">2. 项目经历</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%881%EF%BC%89%E5%9F%BA%E4%BA%8E%E5%A4%9A%E6%A8%A1%E6%80%81%E6%83%85%E6%84%9F%E5%88%86%E6%9E%90%E7%9A%84VR%E6%8A%91%E9%83%81%E7%97%87%E5%9C%A8%E7%BA%BF%E5%88%86%E6%9E%90%E5%B9%B3%E5%8F%B0"><span class="toc-number">3.1.</span> <span class="toc-text">（1）基于多模态情感分析的VR抑郁症在线分析平台</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%882%EF%BC%89%E5%9F%BA%E4%BA%8ELLM%E7%9A%84%E6%99%BA%E8%83%BD%E9%9D%A2%E8%AF%95%E8%AE%AD%E7%BB%83%E7%B3%BB%E7%BB%9F"><span class="toc-number">3.2.</span> <span class="toc-text">（2）基于LLM的智能面试训练系统</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%8A%80%E6%9C%AF%E8%83%BD%E5%8A%9B"><span class="toc-number">4.</span> <span class="toc-text">3. 技术能力</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%9B%A2%E9%98%9F%E5%8D%8F%E4%BD%9C%E4%B8%8E%E5%AD%A6%E4%B9%A0%E8%83%BD%E5%8A%9B"><span class="toc-number">5.</span> <span class="toc-text">4. 团队协作与学习能力</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E8%81%8C%E4%B8%9A%E8%A7%84%E5%88%92"><span class="toc-number">6.</span> <span class="toc-text">5. 职业规划</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/08/24/Rankify%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" title="Rankify论文学习"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Rankify论文学习"/></a><div class="content"><a class="title" href="/2025/08/24/Rankify%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" title="Rankify论文学习">Rankify论文学习</a><time datetime="2025-08-24T09:32:04.000Z" title="发表于 2025-08-24 17:32:04">2025-08-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/06/16/%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F/" title="无题"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2025/06/16/%E9%9D%A2%E8%AF%95%E7%B3%BB%E7%BB%9F/" title="无题">无题</a><time datetime="2025-06-16T13:42:39.137Z" title="发表于 2025-06-16 21:42:39">2025-06-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/" title="RAG学习笔记（四）-问答系统"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG学习笔记（四）-问答系统"/></a><div class="content"><a class="title" href="/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/" title="RAG学习笔记（四）-问答系统">RAG学习笔记（四）-问答系统</a><time datetime="2025-05-23T12:59:22.000Z" title="发表于 2025-05-23 20:59:22">2025-05-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/" title="RAG学习笔记（三）-Retrieval（检索）"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG学习笔记（三）-Retrieval（检索）"/></a><div class="content"><a class="title" href="/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/" title="RAG学习笔记（三）-Retrieval（检索）">RAG学习笔记（三）-Retrieval（检索）</a><time datetime="2025-05-22T08:00:54.000Z" title="发表于 2025-05-22 16:00:54">2025-05-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Embeddings/" title="RAG学习笔记（二）--Embeddings"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG学习笔记（二）--Embeddings"/></a><div class="content"><a class="title" href="/2025/05/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Embeddings/" title="RAG学习笔记（二）--Embeddings">RAG学习笔记（二）--Embeddings</a><time datetime="2025-05-20T08:03:30.000Z" title="发表于 2025-05-20 16:03:30">2025-05-20</time></div></div></div></div></div></div></main><footer id="footer" style="background: url(/img/about.jpg)"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2025 By MUMU</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
