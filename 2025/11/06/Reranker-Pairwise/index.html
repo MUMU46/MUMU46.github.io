@@ -1,0 +1,196 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Reranker-Pairwise | MUMU's blog</title><meta name="author" content="MUMU"><meta name="copyright" content="MUMU"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="Reranker-PairwiseLLM被要求判断一对文档，并查询其中一个文档是否比另一个文档更与查询相关。 配对法的基本思路是对样本进行两两比较，构建偏序文档对，从比较中学习排序，因为对于一个查询关键字来说，最重要的其实不是针对某一个文档的相关性是否估计得准确，而是要能够正确估计一组文档之间的 “相对关系”。 因此，Pairwise 的训练集样本从每一个 “关键字文档对” 变成了 “关键字文档文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Reranker-Pairwise">
+<meta property="og:url" content="http://mumu46.github.io/2025/11/06/Reranker-Pairwise/index.html">
+<meta property="og:site_name" content="MUMU&#39;s blog">
+<meta property="og:description" content="Reranker-PairwiseLLM被要求判断一对文档，并查询其中一个文档是否比另一个文档更与查询相关。 配对法的基本思路是对样本进行两两比较，构建偏序文档对，从比较中学习排序，因为对于一个查询关键字来说，最重要的其实不是针对某一个文档的相关性是否估计得准确，而是要能够正确估计一组文档之间的 “相对关系”。 因此，Pairwise 的训练集样本从每一个 “关键字文档对” 变成了 “关键字文档文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg">
+<meta property="article:published_time" content="2025-11-06T03:12:54.000Z">
+<meta property="article:modified_time" content="2025-11-11T05:13:05.564Z">
+<meta property="article:author" content="MUMU">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="IR">
+<meta property="article:tag" content="Reranker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="http://mumu46.github.io/2025/11/06/Reranker-Pairwise/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Reranker-Pairwise',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-11-11 13:13:05'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="MUMU's blog"><img class="site-icon" src="/img/avatar.png"/><span class="site-name">MUMU's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Reranker-Pairwise</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-06T03:12:54.000Z" title="发表于 2025-11-06 11:12:54">2025-11-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-11T05:13:05.564Z" title="更新于 2025-11-11 13:13:05">2025-11-11</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Reranker-Pairwise"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Reranker-Pairwise"><a href="#Reranker-Pairwise" class="headerlink" title="Reranker-Pairwise"></a>Reranker-Pairwise</h1><p>LLM被要求判断一对文档，并查询其中一个文档是否比另一个文档更与查询相关。</p>
+<p>配对法的基本思路是对样本进行两两比较，构建偏序文档对，从比较中学习排序，因为对于一个查询关键字来说，最重要的其实不是针对某一个文档的相关性是否估计得准确，而是要能够正确估计一组文档之间的 “相对关系”。</p>
+<p>因此，Pairwise 的训练集样本从每一个 “关键字文档对” 变成了 “关键字文档文档配对”。也就是说，每一个数据样本其实是一个比较关系，当前一个文档比后一个文档相关排序更靠前的话，就是正例，否则便是负例，如下图。试想，有三个文档：A、B 和 C。完美的排序是 “B&gt;C&gt;A”。我们希望通过学习两两关系 “B&gt;C”、“B&gt;A” 和 “C&gt;A” 来重构 “B&gt;C&gt;A”。</p>
+<p><strong>PRP（Pairwise Ranker Prompt）</strong>使用以下两两提示符:</p>
+<p>PRP=*“以下两段中哪一段与查询{query}更相关?”段落A:{document A};文章B:{文件B};输出文章A或文章B:*”。</p>
+<p>对于每个query-documents三元组(Q，DI，DJ))，得到如下比较结果之一:</p>
+<img src="https://s2.loli.net/2025/11/07/PUcQzvZmXkIo9T2.png" />
+
+<p>因为llm对提示此种文档的顺序很敏感，所以考虑了两个方向的比较（cij、cji）。使用以下方法对所有配对进行聚合：</p>
+<img src="https://s2.loli.net/2025/11/07/PFs3Khtcf67q8n2.png" />
+
+<h4 id="pairwise存在的问题"><a href="#pairwise存在的问题" class="headerlink" title="pairwise存在的问题"></a>pairwise存在的问题</h4><ol>
+<li>使用的是两文档之间相关度的损失函数，而它和真正衡量排序效果的指标之间存在很大不同，甚至可能是负相关的，如可能出现 Pairwise Loss 越来越低，但 NDCG 分数也越来越低的现象。</li>
+</ol>
+<p><strong>举例说明：</strong><br>假设我们有5个文档，真实相关性是 <code>[3, 2, 1, 0, 0]</code>（3最相关，0不相关）。</p>
+<ul>
+<li><strong>排序A（NDCG高）</strong>: <code>[3, 2, 1, 0, 0]</code> -&gt; <strong>最优排序</strong>，NDCG=1.0。</li>
+<li><strong>排序B（NDCG低）</strong>: <code>[2, 3, 1, 0, 0]</code> -&gt; <strong>次优排序</strong>。</li>
+</ul>
+<p>现在我们来分析Pairwise Loss：</p>
+<ul>
+<li>在排序A和排序B中，大部分文档对的顺序都是正确的。例如，相关性为3和2的文档都比后面1，0，0的文档排名高。</li>
+<li><strong>唯一出错的对子</strong>就是 <code>(3, 2)</code> 这一对。在排序B中，相关性为2的文档排在了相关性为3的文档前面。</li>
+<li>当我们从排序A变为排序B时，<strong>NDCG会显著下降</strong>，因为最相关的文档从第1位跌到了第2位。</li>
+<li>然而，<strong>Pairwise Loss 的增加却非常小</strong>，因为只错了1对，而总共有C(5,2)=10对文档。损失从0%增加到了10%。</li>
+</ul>
+<p>如果模型在优化过程中，为了降低其他9对的微小损失，而“牺牲”了最关键的 <code>(3, 2)</code> 这一对，就会导致<strong>整体Pairwise Loss下降，但NDCG却急剧下降</strong>的负相关现象。</p>
+<ol start="2">
+<li><p>考虑了两个文档的先后顺序，且没有考虑文档在搜索列表中出现的位置，导致最终排序效果并不理想。</p>
+</li>
+<li><p>不同的查询，其相关文档数量差异很大，转换为文档对之后，有的查询可能有几百对文档，有的可能只有几十个，这样不加均一化地在一起学习，模型会优先考虑文档对数量多的查询，减少这些查询的 loss，最终对机器学习的效果评价造成困难。</p>
+</li>
+<li><p>Pairwise 方法的训练样例是偏序文档对，它将对文档的排序转化为对不同文档与查询相关性大小关系的预测；因此，如果因某个文档相关性被预测错误，或文档对的两个文档相关性均被预测错误，则会影响与之关联的其它文档，进而引起连锁反应并影响最终排序结果。</p>
+</li>
+</ol>
+<p>Reciprocal Rank（RR）策略：<br>$$<br>(w_{ij}=\frac{1}{r_{i}})<br>$$<br>使用倒数排名，原因：</p>
+<p>像是1，2，3这样的原始排名每两个排名之间的差值都是1，而倒数排名是非线性的，排名之间的差值会越来越小，也就是对靠前的排名赋予指数级衰减的重要程度。</p>
+<p>因此使用倒数排名可以强调靠前排名的重要性。因为在排序任务中，用户最关注前面几个结果，模型纠正排名靠前的文档对的错误有更高的价值，可实现对Top-k结果的聚焦。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://MUMU46.github.io">MUMU</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://mumu46.github.io/2025/11/06/Reranker-Pairwise/">http://mumu46.github.io/2025/11/06/Reranker-Pairwise/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://MUMU46.github.io" target="_blank">MUMU's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/LLM/">LLM</a><a class="post-meta__tags" href="/tags/IR/">IR</a><a class="post-meta__tags" href="/tags/Reranker/">Reranker</a></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/11/11/%E5%A4%9A%E8%B7%B3%E8%BF%AD%E4%BB%A3%E6%8E%A8%E7%90%86%EF%BC%88Multi-hop%20Iterative%20Reasoning%EF%BC%89/" title="多跳迭代推理"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">多跳迭代推理</div></div></a></div><div class="next-post pull-right"><a href="/2025/11/04/Redefining-Retrieval-Evaluation-in-the-Era-of-LLMs/" title="论文笔记-Redefining Retrieval Evaluation in the Era of LLMs"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">论文笔记-Redefining Retrieval Evaluation in the Era of LLMs</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2025/11/04/Redefining-Retrieval-Evaluation-in-the-Era-of-LLMs/" title="论文笔记-Redefining Retrieval Evaluation in the Era of LLMs"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-04</div><div class="title">论文笔记-Redefining Retrieval Evaluation in the Era of LLMs</div></div></a></div><div><a href="/2025/05/22/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-Retrieval%EF%BC%88%E6%A3%80%E7%B4%A2%EF%BC%89/" title="RAG学习笔记（三）-Retrieval（检索）"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-22</div><div class="title">RAG学习笔记（三）-Retrieval（检索）</div></div></a></div><div><a href="/2025/04/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/" title="RAG学习笔记（一）"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-20</div><div class="title">RAG学习笔记（一）</div></div></a></div><div><a href="/2025/05/23/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F/" title="RAG学习笔记（四）-问答系统"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-23</div><div class="title">RAG学习笔记（四）-问答系统</div></div></a></div><div><a href="/2025/05/20/RAG%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Embeddings/" title="RAG学习笔记（二）--Embeddings"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-20</div><div class="title">RAG学习笔记（二）--Embeddings</div></div></a></div><div><a href="/2025/08/24/Rankify%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/" title="Rankify论文学习"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-24</div><div class="title">Rankify论文学习</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">MUMU</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/MUMU46/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/MUMU46" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:mumu_g@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my blog!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Reranker-Pairwise"><span class="toc-number">1.</span> <span class="toc-text">Reranker-Pairwise</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pairwise%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">pairwise存在的问题</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/11/11/%E5%A4%9A%E8%B7%B3%E8%BF%AD%E4%BB%A3%E6%8E%A8%E7%90%86%EF%BC%88Multi-hop%20Iterative%20Reasoning%EF%BC%89/" title="多跳迭代推理"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="多跳迭代推理"/></a><div class="content"><a class="title" href="/2025/11/11/%E5%A4%9A%E8%B7%B3%E8%BF%AD%E4%BB%A3%E6%8E%A8%E7%90%86%EF%BC%88Multi-hop%20Iterative%20Reasoning%EF%BC%89/" title="多跳迭代推理">多跳迭代推理</a><time datetime="2025-11-11T05:13:05.474Z" title="发表于 2025-11-11 13:13:05">2025-11-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/06/Reranker-Pairwise/" title="Reranker-Pairwise"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Reranker-Pairwise"/></a><div class="content"><a class="title" href="/2025/11/06/Reranker-Pairwise/" title="Reranker-Pairwise">Reranker-Pairwise</a><time datetime="2025-11-06T03:12:54.000Z" title="发表于 2025-11-06 11:12:54">2025-11-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/04/Redefining-Retrieval-Evaluation-in-the-Era-of-LLMs/" title="论文笔记-Redefining Retrieval Evaluation in the Era of LLMs"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="论文笔记-Redefining Retrieval Evaluation in the Era of LLMs"/></a><div class="content"><a class="title" href="/2025/11/04/Redefining-Retrieval-Evaluation-in-the-Era-of-LLMs/" title="论文笔记-Redefining Retrieval Evaluation in the Era of LLMs">论文笔记-Redefining Retrieval Evaluation in the Era of LLMs</a><time datetime="2025-11-04T03:12:54.000Z" title="发表于 2025-11-04 11:12:54">2025-11-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/10/22/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E8%BF%91%E7%AB%AF%E7%AD%96%E7%95%A5%E4%BC%98%E5%8C%96/" title="强化学习-PPO&amp;MDP"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="强化学习-PPO&amp;MDP"/></a><div class="content"><a class="title" href="/2025/10/22/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E8%BF%91%E7%AB%AF%E7%AD%96%E7%95%A5%E4%BC%98%E5%8C%96/" title="强化学习-PPO&amp;MDP">强化学习-PPO&amp;MDP</a><time datetime="2025-10-22T08:04:00.000Z" title="发表于 2025-10-22 16:04:00">2025-10-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/09/26/RAG%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5/" title="RAG检索策略"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG检索策略"/></a><div class="content"><a class="title" href="/2025/09/26/RAG%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5/" title="RAG检索策略">RAG检索策略</a><time datetime="2025-09-26T07:44:16.000Z" title="发表于 2025-09-26 15:44:16">2025-09-26</time></div></div></div></div></div></div></main><footer id="footer" style="background: url(/img/about.jpg)"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2025 By MUMU</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

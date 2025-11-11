@@ -1,0 +1,225 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>强化学习-PPO&amp;MDP | MUMU's blog</title><meta name="author" content="MUMU"><meta name="copyright" content="MUMU"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="近端策略优化 英文全称：Proximal Policy Optimization 定位：一种用于强化学习领域的模型优化算法。它属于策略梯度 方法家族。 核心目标：如何让智能体在一个环境中通过试错，更稳定、更高效地学习到最优的行为策略。  在强化学习中，策略 可以理解为智能体的“大脑”或“行为准则”，它是一个函数，根据当前环境状态，决定该执行什么动作。PPO的目的就是找到那个能获得最多累积奖励的策略">
+<meta property="og:type" content="article">
+<meta property="og:title" content="强化学习-PPO&amp;MDP">
+<meta property="og:url" content="http://mumu46.github.io/2025/10/22/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E8%BF%91%E7%AB%AF%E7%AD%96%E7%95%A5%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:site_name" content="MUMU&#39;s blog">
+<meta property="og:description" content="近端策略优化 英文全称：Proximal Policy Optimization 定位：一种用于强化学习领域的模型优化算法。它属于策略梯度 方法家族。 核心目标：如何让智能体在一个环境中通过试错，更稳定、更高效地学习到最优的行为策略。  在强化学习中，策略 可以理解为智能体的“大脑”或“行为准则”，它是一个函数，根据当前环境状态，决定该执行什么动作。PPO的目的就是找到那个能获得最多累积奖励的策略">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg">
+<meta property="article:published_time" content="2025-10-22T08:04:00.000Z">
+<meta property="article:modified_time" content="2025-11-11T05:13:05.402Z">
+<meta property="article:author" content="MUMU">
+<meta property="article:tag" content="强化学习">
+<meta property="article:tag" content="PPO">
+<meta property="article:tag" content="MDP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="http://mumu46.github.io/2025/10/22/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E8%BF%91%E7%AB%AF%E7%AD%96%E7%95%A5%E4%BC%98%E5%8C%96/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '强化学习-PPO&MDP',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-11-11 13:13:05'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="MUMU's blog"><img class="site-icon" src="/img/avatar.png"/><span class="site-name">MUMU's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">强化学习-PPO&amp;MDP</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-10-22T08:04:00.000Z" title="发表于 2025-10-22 16:04:00">2025-10-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-11T05:13:05.402Z" title="更新于 2025-11-11 13:13:05">2025-11-11</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="强化学习-PPO&amp;MDP"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="近端策略优化"><a href="#近端策略优化" class="headerlink" title="近端策略优化"></a><strong>近端策略优化</strong></h3><ul>
+<li><strong>英文全称</strong>：Proximal Policy Optimization</li>
+<li><strong>定位</strong>：一种用于<strong>强化学习</strong>领域的<strong>模型优化算法</strong>。它属于<strong>策略梯度</strong> 方法家族。</li>
+<li><strong>核心目标</strong>：如何让智能体在一个环境中通过试错，<strong>更稳定、更高效地学习</strong>到最优的行为策略。</li>
+</ul>
+<p>在强化学习中，<strong>策略</strong> 可以理解为智能体的“大脑”或“行为准则”，它是一个函数，根据当前环境状态，决定该执行什么动作。PPO的目的就是找到那个能获得最多累积奖励的策略。</p>
+<h3 id="PPO的核心思想与工作原理"><a href="#PPO的核心思想与工作原理" class="headerlink" title="PPO的核心思想与工作原理"></a><strong>PPO的核心思想与工作原理</strong></h3><p>PPO的核心思想非常直观：<strong>“小步慢跑，不要大步流星”</strong>。它通过一个巧妙的机制，确保新策略与旧策略不会相差太远。</p>
+<p>其最核心的技术是 <strong>“裁剪替代目标函数”</strong>。</p>
+<p>我们来分解一下这个关键点：</p>
+<p><strong>a) 策略更新的比率</strong><br>PPO引入了一个“比率”的概念：<br><code>比率 = 新策略下采取某个动作的概率 / 旧策略下采取某个动作的概率</code></p>
+<ul>
+<li>如果比率 &gt; 1：表示这个动作在新策略下更被鼓励。</li>
+<li>如果比率 &lt; 1：表示这个动作在新策略下更被抑制。</li>
+</ul>
+<p><strong>b) 优势函数</strong><br><code>优势函数</code> 用于衡量在某个状态下，采取某个动作比采取平均动作要好多少。一个正的优势值意味着“这个动作很棒”，负值则意味着“这个动作很糟”。</p>
+<p><strong>c) 核心目标函数（未经裁剪的）</strong><br>最初的目标是最大化：<code>比率 × 优势函数</code>。这意味着：</p>
+<ul>
+<li>如果优势为正（好动作），我们就提高这个动作的概率（让比率变大）。</li>
+<li>如果优势为负（坏动作），我们就降低这个动作的概率（让比率变小）。</li>
+</ul>
+<p><strong>d) 神奇的“裁剪”</strong><br>直接最大化上述目标风险很大，因为如果某个动作的优势值极高且比率变得非常大，一次更新就可能毁掉策略。</p>
+<p>PPO的解决方案是：<strong>给这个比率设定一个上下限（例如 0.8 和 1.2）</strong>。</p>
+<p>它的目标函数变为：<br><code>目标 = min( 比率 × 优势, clip(比率, 0.8, 1.2) × 优势 )</code></p>
+<p>这个<code>min</code>和<code>clip</code>操作的作用是：</p>
+<ul>
+<li>当动作是“好”的（优势为正）时，防止比率超过1.2，避免策略因单次更新而变得过于激进。</li>
+<li>当动作是“坏”的（优势为负）时，防止比率低于0.8，避免策略因单次更新而彻底抛弃这个动作。</li>
+</ul>
+<p><strong>这就好比给策略更新安装了一个“稳定器”，确保每次更新都在一个可信的“近端”区域内进行，从而保证了训练的稳定性。</strong></p>
+<h4 id="总之"><a href="#总之" class="headerlink" title="总之"></a>总之</h4><p><strong>近端策略优化</strong> 是强化学习领域的一个里程碑式的算法。它通过其<strong>简洁而有效的裁剪机制</strong>，在<strong>稳定性</strong>和<strong>性能</strong>之间取得了绝佳的平衡，使其成为学术界和工业界最受欢迎、应用最广泛的强化学习算法之一。无论是在传统的游戏与控制领域，还是在前沿的大语言模型对齐中，PPO都扮演着至关重要的角色。</p>
+<h2 id="马尔可夫决策过程（MDP）"><a href="#马尔可夫决策过程（MDP）" class="headerlink" title="马尔可夫决策过程（MDP）"></a>马尔可夫决策过程（MDP）</h2><ul>
+<li><strong>英文全称</strong>：Markov Decision Process</li>
+<li><strong>定位</strong>：一个<strong>数学框架</strong>，用于在<strong>随机结果</strong>和<strong>不同行动选择</strong>并存的环境中，对<strong>序贯决策</strong>问题进行建模。它是强化学习的理论基础。</li>
+<li><strong>核心目标</strong>：为智能体找到一个最优的<strong>策略</strong>，告诉它在任何状态下应该采取什么行动，以最大化长期的累积奖励。</li>
+</ul>
+<h3 id="核心组成元素"><a href="#核心组成元素" class="headerlink" title="核心组成元素"></a><strong>核心组成元素</strong></h3><p>一个标准的MDP通常由五元组 $(S, A, P, R, \gamma)$ 构成：</p>
+<ol>
+<li><strong>状态集</strong>：所有可能的环境情况。例如，在象棋游戏中就是所有可能的棋盘布局。</li>
+<li><strong>动作集</strong>：智能体在任意状态下可以执行的所有可能动作。例如，机器人可以移动的方向，或者棋手可以走的棋步。</li>
+<li><strong>状态转移函数</strong>：$P(s’ | s, a)$。这是一个概率分布，表示在状态 $s$ 下执行动作 $a$ 后，环境转移到新状态 $s’$ 的概率。<strong>它体现了环境的动态特性和不确定性。</strong></li>
+<li><strong>奖励函数</strong>：$R(s, a, s’)$。智能体在状态 $s$ 执行动作 $a$ 并进入状态 $s’$ 后，环境给予的即时奖励（或惩罚）。<strong>它定义了任务的目标。</strong></li>
+<li><strong>折扣因子</strong>：$\gamma$。一个介于0和1之间的数，用于衡量未来奖励的当前价值。$\gamma$ 越接近0，表示越“短视”，越看重即时奖励；$\gamma$ 越接近1，表示越“有远见”，越看重长期回报。</li>
+</ol>
+<h3 id="关键特性：“马尔可夫性”"><a href="#关键特性：“马尔可夫性”" class="headerlink" title="关键特性：“马尔可夫性”"></a><strong>关键特性：“马尔可夫性”</strong></h3><p>MDP得名于其核心特性——<strong>马尔可夫性</strong>，也称为“无后效性”。</p>
+<p><strong>定义</strong>：未来的状态转移和奖励<strong>只依赖于当前的状态和采取的动作</strong>，而与过去的历史状态和动作无关。</p>
+<p>用数学公式表达即：<br>$P(s_{t+1} | s_t, a_t, s_{t-1}, a_{t-1}, …, s_0, a_0) = P(s_{t+1} | s_t, a_t)$</p>
+<p><strong>这意味着，只要知道了“现在”，那么“未来”就与“过去”无关了。</strong> 这个特性极大地简化了问题，因为决策时只需要关注当前状态，而不需要记住整个历史。</p>
+<h2 id="MDP和PPO的关系"><a href="#MDP和PPO的关系" class="headerlink" title="MDP和PPO的关系"></a>MDP和PPO的关系</h2><ul>
+<li><strong>马尔可夫决策过程（MDP）</strong> 就像是 <strong>“一份详细的地图和图例说明”</strong>。它定义了整个世界的规则：有哪些地点（状态）、可以怎么走（动作）、走某条路到达下一个地点的可能性有多大（状态转移）、走某条路能获得多少金币或惩罚（奖励），以及未来金币的折算比例（折扣因子）。</li>
+<li><strong>近端策略优化（PPO）</strong> 就像是 <strong>“一个正在这片地图上学习如何高效收集金币的探险家”</strong>。地图（MDP）的规则是固定的，但探险家不知道。他通过不断尝试（与环境交互），利用PPO这个<strong>独特的学习方法</strong>，来优化自己的行走策略，最终成为这片土地上最富有的探险家。</li>
+</ul>
+<h3 id="核心联系：PPO是解决MDP问题的工具"><a href="#核心联系：PPO是解决MDP问题的工具" class="headerlink" title="核心联系：PPO是解决MDP问题的工具"></a><strong>核心联系：PPO是解决MDP问题的工具</strong></h3><ol>
+<li><strong>MDP 定义了问题</strong><br>MDP提供了一个<strong>完整的、形式化的数学框架</strong>，来描述一个智能体在具有随机性的环境中如何通过做出一系列决策来达成目标。它明确了问题的所有组成部分：<code>(S, A, P, R, γ)</code>。</li>
+<li><strong>PPO 提供了解决方案</strong><br>PPO是一种具体的<strong>算法</strong>，其目标就是在MDP所描述的环境中，为智能体找到一个最优的<strong>策略</strong>，从而最大化长期的累积奖励。当MDP的模型（特别是状态转移函数 <code>P</code> 和奖励函数 <code>R</code>）<strong>未知、过于复杂或规模太大</strong>而<strong>无法直接用动态规划（如价值迭代）求解时</strong>，PPO这类强化学习算法就派上了用场。</li>
+</ol>
+<p>让我们回顾一下MDP的五元组，看看PPO是如何与它们协同工作的：</p>
+<ul>
+<li><strong>状态集 <code>S</code> 和 动作集 <code>A</code><strong>：PPO智能体通过</strong>与环境交互</strong>来感知状态 <code>s_t</code>，并从其策略中采样动作 <code>a_t</code>。这个环境就是一个“黑箱”版的MDP。</li>
+<li><strong>状态转移函数 <code>P(s&#39;|s,a)</code><strong>：PPO</strong>不需要知道</strong>这个函数的具体形式！它通过实际执行动作 <code>a_t</code> 并观察结果状态 <code>s_&#123;t+1&#125;</code> 来<strong>体验</strong>这种状态转移。这是强化学习与传统规划方法的根本区别之一。</li>
+<li><strong>奖励函数 <code>R(s,a,s&#39;)</code><strong>：同样，PPO不需要直接知道这个函数。它通过在交互后接收到的即时奖励 <code>r_&#123;t+1&#125;</code> 来</strong>感受</strong>奖励信号。</li>
+<li><strong>折扣因子 <code>γ</code><strong>：这是一个PPO需要设定的</strong>超参数</strong>，它直接影响了PPO算法中<strong>回报</strong>的计算，决定了智能体是“短视”还是“有远见”。</li>
+</ul>
+<h4 id="理解二者联系的关键："><a href="#理解二者联系的关键：" class="headerlink" title="理解二者联系的关键："></a>理解二者联系的关键：</h4><ul>
+<li><strong>已知MDP模型</strong>：如果我们完全了解 <code>P</code> 和 <code>R</code>，我们可以使用<strong>规划算法</strong>（如策略迭代、价值迭代）在计算机内部进行“推演”，直接计算出最优策略。</li>
+<li><strong>未知MDP模型（更常见的情况）</strong>：在大多数现实问题中（如机器人控制、游戏AI），我们无法知晓完整的环境动力学 <code>P</code> 和精确的奖励 <code>R</code>。这时，我们就需要像PPO这样的<strong>强化学习算法</strong>。智能体必须通过<strong>亲身试错</strong>来收集经验数据 <code>(s_t, a_t, r_&#123;t+1&#125;, s_&#123;t+1&#125;)</code>，并利用这些数据来<strong>学习和改进</strong>其策略。</li>
+</ul>
+<p>因此，PPO是为了在<strong>MDP框架下</strong>，当模型未知时，<strong>寻找最优策略</strong>而设计的一种<strong>高效、稳定</strong>的算法。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://MUMU46.github.io">MUMU</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://mumu46.github.io/2025/10/22/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E8%BF%91%E7%AB%AF%E7%AD%96%E7%95%A5%E4%BC%98%E5%8C%96/">http://mumu46.github.io/2025/10/22/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E8%BF%91%E7%AB%AF%E7%AD%96%E7%95%A5%E4%BC%98%E5%8C%96/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://MUMU46.github.io" target="_blank">MUMU's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/">强化学习</a><a class="post-meta__tags" href="/tags/PPO/">PPO</a><a class="post-meta__tags" href="/tags/MDP/">MDP</a></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/11/04/Redefining-Retrieval-Evaluation-in-the-Era-of-LLMs/" title="论文笔记-Redefining Retrieval Evaluation in the Era of LLMs"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">论文笔记-Redefining Retrieval Evaluation in the Era of LLMs</div></div></a></div><div class="next-post pull-right"><a href="/2025/09/26/RAG%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5/" title="RAG检索策略"><img class="cover" src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">RAG检索策略</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">MUMU</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/MUMU46/"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/MUMU46" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:mumu_g@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome to my blog!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%91%E7%AB%AF%E7%AD%96%E7%95%A5%E4%BC%98%E5%8C%96"><span class="toc-number">1.</span> <span class="toc-text">近端策略优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PPO%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3%E4%B8%8E%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">PPO的核心思想与工作原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E4%B9%8B"><span class="toc-number">2.1.</span> <span class="toc-text">总之</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E5%86%B3%E7%AD%96%E8%BF%87%E7%A8%8B%EF%BC%88MDP%EF%BC%89"><span class="toc-number"></span> <span class="toc-text">马尔可夫决策过程（MDP）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%BB%84%E6%88%90%E5%85%83%E7%B4%A0"><span class="toc-number">1.</span> <span class="toc-text">核心组成元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E7%89%B9%E6%80%A7%EF%BC%9A%E2%80%9C%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%80%A7%E2%80%9D"><span class="toc-number">2.</span> <span class="toc-text">关键特性：“马尔可夫性”</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MDP%E5%92%8CPPO%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number"></span> <span class="toc-text">MDP和PPO的关系</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E8%81%94%E7%B3%BB%EF%BC%9APPO%E6%98%AF%E8%A7%A3%E5%86%B3MDP%E9%97%AE%E9%A2%98%E7%9A%84%E5%B7%A5%E5%85%B7"><span class="toc-number">1.</span> <span class="toc-text">核心联系：PPO是解决MDP问题的工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%90%86%E8%A7%A3%E4%BA%8C%E8%80%85%E8%81%94%E7%B3%BB%E7%9A%84%E5%85%B3%E9%94%AE%EF%BC%9A"><span class="toc-number">1.1.</span> <span class="toc-text">理解二者联系的关键：</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/11/11/%E5%A4%9A%E8%B7%B3%E8%BF%AD%E4%BB%A3%E6%8E%A8%E7%90%86%EF%BC%88Multi-hop%20Iterative%20Reasoning%EF%BC%89/" title="多跳迭代推理"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="多跳迭代推理"/></a><div class="content"><a class="title" href="/2025/11/11/%E5%A4%9A%E8%B7%B3%E8%BF%AD%E4%BB%A3%E6%8E%A8%E7%90%86%EF%BC%88Multi-hop%20Iterative%20Reasoning%EF%BC%89/" title="多跳迭代推理">多跳迭代推理</a><time datetime="2025-11-11T05:13:05.474Z" title="发表于 2025-11-11 13:13:05">2025-11-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/06/Reranker-Pairwise/" title="Reranker-Pairwise"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Reranker-Pairwise"/></a><div class="content"><a class="title" href="/2025/11/06/Reranker-Pairwise/" title="Reranker-Pairwise">Reranker-Pairwise</a><time datetime="2025-11-06T03:12:54.000Z" title="发表于 2025-11-06 11:12:54">2025-11-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/04/Redefining-Retrieval-Evaluation-in-the-Era-of-LLMs/" title="论文笔记-Redefining Retrieval Evaluation in the Era of LLMs"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="论文笔记-Redefining Retrieval Evaluation in the Era of LLMs"/></a><div class="content"><a class="title" href="/2025/11/04/Redefining-Retrieval-Evaluation-in-the-Era-of-LLMs/" title="论文笔记-Redefining Retrieval Evaluation in the Era of LLMs">论文笔记-Redefining Retrieval Evaluation in the Era of LLMs</a><time datetime="2025-11-04T03:12:54.000Z" title="发表于 2025-11-04 11:12:54">2025-11-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/10/22/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E8%BF%91%E7%AB%AF%E7%AD%96%E7%95%A5%E4%BC%98%E5%8C%96/" title="强化学习-PPO&amp;MDP"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="强化学习-PPO&amp;MDP"/></a><div class="content"><a class="title" href="/2025/10/22/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E8%BF%91%E7%AB%AF%E7%AD%96%E7%95%A5%E4%BC%98%E5%8C%96/" title="强化学习-PPO&amp;MDP">强化学习-PPO&amp;MDP</a><time datetime="2025-10-22T08:04:00.000Z" title="发表于 2025-10-22 16:04:00">2025-10-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/09/26/RAG%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5/" title="RAG检索策略"><img src="https://s2.loli.net/2024/03/24/Vc4iO8B9vo2fg1h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RAG检索策略"/></a><div class="content"><a class="title" href="/2025/09/26/RAG%E6%A3%80%E7%B4%A2%E7%AD%96%E7%95%A5/" title="RAG检索策略">RAG检索策略</a><time datetime="2025-09-26T07:44:16.000Z" title="发表于 2025-09-26 15:44:16">2025-09-26</time></div></div></div></div></div></div></main><footer id="footer" style="background: url(/img/about.jpg)"><div id="footer-wrap"><div class="copyright">&copy;2021 - 2025 By MUMU</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
